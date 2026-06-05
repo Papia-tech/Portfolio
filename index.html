@@ -10,39 +10,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/Favicon.png">
 
     <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
     <title>Papia Karmakar | B.Tech CSE Student</title>
 
     <style>
         :root {
-            /* --- VS CODE THEME COLORS --- */
             --primary-green: #4ec9b0;
-            /* Teal/Green for Classes */
             --accent-blue: #569cd6;
-            /* VS Code Blue for Keywords */
             --string-orange: #ce9178;
-            /* Orange for strings */
-
-            /* UPDATED: Slightly brighter for better readability */
             --comment-gray: #7ca668;
 
             --dark-bg: #1e1e1e;
-            /* VS Code Editor Background */
             --sidebar-bg: #333333;
-            /* Activity Bar Background */
 
             --card-bg: #252526;
-            /* Side Panel Background */
             --card-border: #3e3e3e;
             --input-bg: #3c3c3c;
 
             --text-white: #d4d4d4;
-            /* Standard VS Code Text */
             --text-gray: #858585;
-            /* Line number color */
             --footer-bg: #007acc;
-            /* Optional: VS Code Status Bar Blue, or use sidebar-bg */
             --sidebar-width: 60px;
         }
 
@@ -51,7 +40,6 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Fira Code', 'Consolas', monospace;
-            /* REMOVED 'scroll-behavior: smooth' here to allow Custom JS Speed */
         }
 
         ::-webkit-scrollbar {
@@ -82,37 +70,104 @@
             font-size: 14px;
         }
 
-        /* --- LOGO IMAGE STYLING --- */
+        /* --- PRELOADER STYLES --- */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--dark-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loader-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .loader-text {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            font-family: 'Fira Code', monospace;
+        }
+
+        .loader-text span::after {
+            content: "Loading";
+            color: var(--text-white);
+            animation: textLoop 2s infinite;
+        }
+
+        .loader-bar {
+            width: 120px;
+            height: 2px;
+            background: var(--card-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loader-bar::after {
+            content: "";
+            position: absolute;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-green);
+            animation: loadingBar 1.5s infinite ease-in-out;
+        }
+
+        /* Animations */
+        @keyframes textLoop {
+
+            0%,
+            100% {
+                content: "Initializing";
+            }
+
+            33% {
+                content: "Fetching_Data";
+            }
+
+            66% {
+                content: "Compiling";
+            }
+        }
+
+        @keyframes loadingBar {
+            0% {
+                left: -100%;
+            }
+
+            50% {
+                left: 0;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+
+        /* Class to hide the loader */
+        .loader-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
         .logo-img {
             position: fixed;
             top: 22px;
             left: 70px;
-            /* fits nicely inside the 60px sidebar */
             height: 28px;
-            /* square dimensions */
             object-fit: contain;
             z-index: 2000;
-        }
-
-        /* --- MOBILE ADJUSTMENT --- */
-        /* This forces the logo to stay visible at the top-left on mobile */
-        @media (max-width: 768px) {
-            .logo {
-                display: flex !important;
-                /* Force it to show (currently hidden in your code) */
-                position: fixed;
-                top: 15px;
-                left: 20px;
-                z-index: 1001;
-                /* Ensure it sits on top of everything */
-
-                /* Optional: Add a small background so it stands out against content */
-                background: rgba(30, 30, 30, 0.6);
-                backdrop-filter: blur(4px);
-                padding: 5px;
-                border-radius: 50%;
-                border: 1px solid var(--card-border);
-            }
         }
 
         /* --- Ambient Background Glow --- */
@@ -213,7 +268,53 @@
             width: calc(100% - var(--sidebar-width));
             display: flex;
             flex-direction: column;
-            /* Needed to push footer down */
+        }
+
+        /* Creating the Tooltip/Label */
+        .nav-item::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 140%;
+            background-color: var(--accent-blue);
+            color: #000;
+            padding: 6px 12px;
+            font-size: 0.80rem;
+            font-weight: 500;
+            white-space: nowrap;
+            border-radius: 4px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Creating a small arrow for the label */
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 110%;
+            border: 5px solid transparent;
+            border-right-color: var(--accent-blue);
+            opacity: 0;
+            transition: all 0.3s ease;
+            transform: translateX(-10px);
+        }
+
+        /* Show Tooltip and Arrow on Hover */
+        .nav-item:hover::after,
+        .nav-item:hover::before {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Hide tooltips on mobile/bottom sidebar for better UX */
+        @media (max-width: 768px) {
+
+            .nav-item::after,
+            .nav-item::before {
+                display: none !important;
+            }
         }
 
         /* ========================
@@ -332,13 +433,17 @@
 
         .btn-primary {
             background-color: var(--accent-blue);
-            color: #ffffff;
+            color: #000;
             border: 1px solid var(--accent-blue);
         }
 
         .btn-primary:hover {
-            background-color: transparent;
-            color: var(--accent-blue);
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(3px);
         }
 
         .btn-secondary {
@@ -350,6 +455,11 @@
         .btn-secondary:hover {
             border-color: var(--primary-green);
             color: var(--primary-green);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(3px);
         }
 
         .stats-container {
@@ -423,6 +533,55 @@
             color: #fff;
         }
 
+        /* --- HERO SECTION ANIMATIONS --- */
+        .hero-animate {
+            opacity: 0;
+            animation: heroFadeInUp 0.8s ease-out forwards;
+        }
+
+        .hero-img-pop {
+            opacity: 0;
+            transform: scale(0.5);
+            animation: smoothPop 0.8s ease-out forwards;
+            animation-delay: 0.4s;
+        }
+
+        @keyframes smoothPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            60% {
+                opacity: 1;
+                transform: scale(1.08);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes heroFadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.4s; }
+        .delay-4 { animation-delay: 0.6s; }
+        .delay-5 { animation-delay: 0.8s; }
+        .delay-img { animation-delay: 0.4s; }
+
         /* ========================
            SECTION 2: ABOUT / EXPERTISE
            ======================== */
@@ -475,6 +634,12 @@
         .about-stat-item span {
             font-size: 0.85rem;
             color: var(--text-gray);
+        }
+
+        .second-resume-btn {
+            border: var(--accent-blue) !important;
+            background: var(--accent-blue) !important;
+            color: #000 !important;
         }
 
         .bento-grid {
@@ -608,8 +773,12 @@
         }
 
         @keyframes scroll {
+            from {
+                transform: translateX(0);
+            }
+
             to {
-                transform: translate(calc(-50% - 0.75rem));
+                transform: translateX(calc(-50% - 0.75rem));
             }
         }
 
@@ -641,83 +810,152 @@
         }
 
         /* ========================
-           SECTION 2.5: EDUCATION
+           SECTION 2.5: EDUCATION (TAB DASHBOARD THEME)
            ======================== */
         .education-section {
-            min-height: 80vh;
+            min-height: 90vh;
             padding: 5rem 4rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
-        .education-container {
-            max-width: 900px;
-            margin: 0 auto;
+        .ide-container {
+            max-width: 1000px;
             width: 100%;
-            position: relative;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
         }
 
-        .timeline-wrapper {
-            position: relative;
-            padding-left: 20px;
-            border-left: 2px solid var(--card-border);
+        /* Editor Header Tabs */
+        .ide-tabs {
+            display: flex;
+            background: #181818;
+            border-bottom: 1px solid var(--card-border);
+            overflow-x: auto;
         }
 
-        .timeline-item {
-            position: relative;
-            margin-bottom: 3.5rem;
-            padding-left: 2rem;
-            animation: fadeInUp linear both;
-            animation-timeline: view();
-            animation-range: entry 0% cover 40%;
-        }
-
-        .timeline-item:last-child {
-            margin-bottom: 0;
-        }
-
-        /* The Dot on the Line */
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -27px;
-            /* Adjust to center on line */
-            top: 0px;
-            width: 12px;
-            height: 12px;
-            background: var(--accent-blue);
-            border-radius: 50%;
-            border: 2px solid var(--dark-bg);
-            /* Gap effect */
-            box-shadow: 0 0 0 4px rgba(86, 156, 214, 0.1);
-        }
-
-        .timeline-date {
-            font-size: 0.85rem;
+        .ide-tab {
+            padding: 12px 20px;
+            background: #1e1e1e;
             color: var(--text-gray);
-            margin-bottom: 0.5rem;
-            display: block;
+            border-right: 1px solid var(--card-border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            user-select: none;
+            transition: all 0.2s ease;
         }
 
-        .timeline-title {
-            font-size: 1.5rem;
-            color: var(--primary-green);
-            font-weight: 600;
-            margin-bottom: 0.3rem;
+        .ide-tab i.file-icon {
+            color: #f14e32; /* Default git/orange color */
         }
 
-        .timeline-subtitle {
-            font-size: 1.1rem;
-            color: var(--text-white);
-            margin-bottom: 0.8rem;
+        .ide-tab.active {
+            background: var(--card-bg);
+            color: var(--accent-blue);
+            border-bottom: 2px solid var(--accent-blue);
             font-weight: 500;
         }
 
-        .timeline-desc {
-            color: var(--text-gray);
-            line-height: 1.6;
-            font-size: 0.95rem;
+        .ide-tab:hover:not(.active) {
+            background: #222;
+            color: var(--text-white);
+        }
+
+        /* Editor Window Body Layout */
+        .ide-body {
+            display: flex;
+            min-height: 380px;
+            position: relative;
+        }
+
+        /* Code Line Number Sidebar */
+        .ide-line-numbers {
+            padding: 1.5rem 1rem;
+            background: #1c1c1c;
+            color: #5a5a5a;
+            text-align: right;
+            user-select: none;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            border-right: 1px solid rgba(255,255,255,0.03);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Code Text Panel */
+        .ide-content-panel {
+            flex: 1;
+            padding: 1.5rem 2rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .edu-file-content {
+            display: none;
+            animation: ideFade 0.4s ease forwards;
+            line-height: 1.8;
+            font-size: 0.9rem;
+        }
+
+        .edu-file-content.active {
+            display: block;
+        }
+
+        @keyframes ideFade {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mini Syntaxes inside code content */
+        .syntax-keyword { color: var(--accent-blue); }
+        .syntax-string { color: #999; }
+        .syntax-name { color: var(--primary-green); }
+        .syntax-comment { color: var(--comment-gray); font-style: italic; display: block; margin-bottom: 0.5rem;}
+
+        .edu-details-list {
+            list-style: none;
+            padding-left: 1.5rem;
+            margin: 0.8rem 0;
+        }
+
+        .edu-details-list li {
+            position: relative;
+            margin-bottom: 6px;
+            color: var(--text-white);
+        }
+
+        .edu-details-list li::before {
+            content: "->";
+            position: absolute;
+            left: -1.5rem;
+            color: var(--primary-green);
+        }
+
+        @media(max-width: 768px) {
+            .ide-body { flex-direction: column; }
+            .ide-line-numbers { display: none; }
+            .ide-content-panel { padding: 1.2rem 1rem; }
+        }
+
+        /* Unique animation for the resume download text */
+        #download-text span::after {
+            content: "Fetching Resume...";
+            color: var(--text-white);
+            animation: resumeLoop 2s infinite step-end;
+        }
+
+        @keyframes resumeLoop {
+            0%, 100% { content: "Fetching_Resume..."; }
+            33% { content: "Reading_File..."; }
+            66% { content: "Downloading..."; }
         }
 
         /* ========================
@@ -761,10 +999,14 @@
             border: 1px solid var(--card-border);
             border-radius: 4px;
             padding: 1.5rem;
-            transition: transform 0.3s ease;
-            animation: fadeInUp linear both;
-            animation-timeline: view();
-            animation-range: entry 0% cover 40%;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out, border-color 0.3s ease;
+        }
+
+        .skill-category-card.reveal {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .skill-category-card:hover {
@@ -868,7 +1110,7 @@
         }
 
         /* ========================
-           SECTION 3.5: CERTIFICATIONS (NEW)
+           SECTION 3.5: CERTIFICATIONS
            ======================== */
         .cert-section {
             padding: 5rem 4rem;
@@ -877,41 +1119,68 @@
 
         .cert-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
             margin-top: 3rem;
+            border-top: 1px solid var(--card-border);
+            border-left: 1px solid var(--card-border);
         }
 
-        /* VS Code Extension Card Style */
+        .cert-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .cert-card-link.reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .cert-card {
             display: flex;
             gap: 1rem;
             background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            padding: 1rem;
+            border-right: 1px solid var(--card-border);
+            border-bottom: 1px solid var(--card-border);
+            padding: 1.5rem;
             align-items: flex-start;
-            transition: 0.2s;
-            animation: fadeInUp linear both;
-            animation-timeline: view();
-            animation-range: entry 0% cover 40%;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            height: 100%;
+            border-left: 3px solid transparent;
+            z-index: 1;
         }
 
-        .cert-card:hover {
-            border-color: var(--accent-blue);
-            background: rgba(255, 255, 255, 0.02);
+        .cert-card-link:hover .cert-card {
+            border-left-color: var(--accent-blue);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        .cert-card-link:hover .cert-icon {
+            transform: scale(1.1) rotate(5deg);
+            color: var(--text-white);
+            background: var(--accent-blue);
         }
 
         .cert-icon {
-            width: 50px;
-            height: 50px;
-            min-width: 50px;
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
             background: var(--input-bg);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: var(--accent-blue);
             border-radius: 2px;
+            transition: all 0.3s ease;
         }
 
         .cert-content {
@@ -943,26 +1212,20 @@
         .cert-desc {
             font-size: 0.85rem;
             color: var(--text-gray);
-            margin: 6px 0;
+            margin: 6px 0 0 0;
             line-height: 1.4;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
-        .cert-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 5px;
-        }
-
         .install-btn {
             background: var(--accent-blue);
-            color: white;
+            color: #000;
             border: none;
             padding: 4px 12px;
-            font-size: 0.75rem;
+            font-size: 0.80rem;
             font-weight: 500;
             cursor: pointer;
             transition: 0.2s;
@@ -970,6 +1233,12 @@
 
         .install-btn:hover {
             opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .install-btn:active {
+            opacity: 1;
+            transform: translateY(0px);
         }
 
         /* ========================
@@ -1033,7 +1302,7 @@
 
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 2rem;
             position: relative;
         }
@@ -1060,13 +1329,8 @@
             border-color: var(--accent-blue);
         }
 
-        .arrow-left {
-            left: -70px;
-        }
-
-        .arrow-right {
-            right: -70px;
-        }
+        .arrow-left { left: -70px; }
+        .arrow-right { right: -70px; }
 
         .project-card {
             background: var(--card-bg);
@@ -1074,29 +1338,62 @@
             border-radius: 4px;
             overflow: hidden;
             transition: transform 0.3s ease, border-color 0.3s ease;
-            animation: fadeInUp linear both;
-            animation-timeline: view();
-            animation-range: entry 0% cover 40%;
         }
 
         .project-card:hover {
-            transform: translateY(-8px);
             border-color: var(--accent-blue);
         }
 
         .project-img-wrapper {
             position: relative;
-            height: 220px;
+            height: 320px;
             width: 100%;
             overflow: hidden;
             border-bottom: 1px solid var(--card-border);
+            padding-top: 30px;
+            background-color: var(--card-bg);
+        }
+
+        .project-img-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background-color: var(--sidebar-bg);
+            border-bottom: 1px solid var(--card-border);
+            z-index: 5;
+        }
+
+        .project-img-wrapper::after {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #111;
+            box-shadow:
+                18px 0 0 #222,
+                36px 0 0 #111;
+            z-index: 6;
+        }
+
+        .js-scroll-wrapper {
+            animation: fadeInUp linear both;
+            animation-timeline: view();
+            animation-range: entry 0% cover 30%;
         }
 
         .project-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: top;
             transition: transform 0.5s ease;
+            display: block;
         }
 
         .project-card:hover .project-img {
@@ -1105,13 +1402,14 @@
 
         .project-type-badge {
             position: absolute;
-            top: 15px;
+            top: 45px;
             left: 15px;
             background: rgba(30, 30, 30, 0.8);
             border: 1px solid var(--accent-blue);
             padding: 6px 14px;
             font-size: 0.75rem;
             color: var(--accent-blue);
+            z-index: 10;
         }
 
         .project-links {
@@ -1121,6 +1419,7 @@
             font-size: 1.2rem;
             display: flex;
             gap: 5px;
+            z-index: 10;
         }
 
         .project-link-btn {
@@ -1139,6 +1438,7 @@
         .project-link-btn:hover {
             background: var(--accent-blue);
             border-color: var(--accent-blue);
+            color: #000;
         }
 
         .project-content {
@@ -1180,6 +1480,38 @@
             border: 1px solid var(--card-border);
             color: var(--text-white);
             background: transparent;
+        }
+
+        .section-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-white);
+            margin-bottom: 0.6rem;
+            margin-top: 1.2rem;
+            display: block;
+        }
+
+        .learning-list {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .learning-item {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            margin-bottom: 6px;
+            position: relative;
+            padding-left: 16px;
+            line-height: 1.4;
+        }
+
+        .learning-item::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent-blue);
+            font-weight: bold;
         }
 
         .project-stat {
@@ -1226,7 +1558,6 @@
             color: var(--string-orange);
         }
 
-        /* Form Card */
         .contact-form-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -1275,7 +1606,7 @@
             width: 100%;
             padding: 16px;
             background: var(--accent-blue);
-            color: white;
+            color: #000;
             border: none;
             border-radius: 0;
             font-weight: 600;
@@ -1291,9 +1622,14 @@
 
         .send-btn:hover {
             opacity: 0.9;
+            transform: translateY(-2px);
         }
 
-        /* Contact Info Side */
+        .send-btn:active {
+            opacity: 1;
+            transform: translateY(3px);
+        }
+
         .contact-info-wrapper {
             padding-top: 1rem;
         }
@@ -1334,6 +1670,8 @@
 
         .info-card:hover {
             transform: translateY(-3px);
+            background: rgba(86, 156, 214, 0.1);
+            color: var(--accent-blue);
             border-color: var(--accent-blue);
         }
 
@@ -1366,7 +1704,6 @@
             color: var(--string-orange);
         }
 
-        /* Social Links */
         .social-links {
             margin-top: 3rem;
             display: flex;
@@ -1406,15 +1743,54 @@
             }
         }
 
-        /* --- FLOATING CONTACT BUTTON --- */
+        .right-sidebar {
+            position: fixed;
+            right: 52px;
+            top: calc(50% - 170px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            z-index: 100;
+        }
+
+        .right-sidebar::after {
+            content: "";
+            width: 1px;
+            height: 90px;
+            background-color: var(--text-gray);
+            margin-top: 10px;
+        }
+
+        .social-text {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            color: var(--accent-blue);
+            font-size: 0.90rem;
+            letter-spacing: 0.1em;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .social-text:hover {
+            color: var(--primary-green);
+        }
+
+        @media (max-width: 1024px) {
+            .right-sidebar {
+                display: none;
+            }
+        }
+
         .floating-btn {
             position: fixed;
             bottom: 35px;
-            right: 40px;
+            right: 30px;
             width: 60px;
             height: 60px;
             background-color: var(--accent-blue);
-            color: #fff;
+            color: #000;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1424,25 +1800,25 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
             z-index: 1000;
             transition: all 0.3s ease;
-
-            /* Initial State: Visible */
             opacity: 1;
             pointer-events: all;
             transform: translateY(0);
         }
 
         .floating-btn:hover {
-            background-color: var(--primary-green);
-            transform: scale(1.1);
-            color: #fff;
+            opacity: 0.9;
+            transform: scale(1.05);
         }
 
-        /* Hidden State (When at Contact Section) */
+        .floating-btn:active {
+            background-color: var(--accent-blue);
+            transform: scale(0.95);
+        }
+
         .floating-btn.hide-btn {
             opacity: 0;
             pointer-events: none;
             transform: translateY(20px);
-            /* Slides down slightly when disappearing */
         }
 
         @media (max-width: 768px) {
@@ -1456,11 +1832,10 @@
         }
 
         /* ========================
-           SECTION 6: FOOTER (NEW)
+           SECTION 6: FOOTER
            ======================== */
         .footer-section {
             background: var(--sidebar-bg);
-            /* Solid distinct background */
             border-top: 1px solid var(--card-border);
             padding: 2rem 4rem;
             margin-top: auto;
@@ -1499,21 +1874,24 @@
             font-weight: 500;
         }
 
-        /* Responsive Design */
         /* ========================
            RESPONSIVE & MOBILE OPTIMIZATION
            ======================== */
-
-        /* --- Tablet / Small Laptop (1024px) --- */
         @media (max-width: 1024px) {
-            h1 { font-size: 2.5rem; }
+            h1 {
+                font-size: 2.5rem;
+            }
 
-            .hero-section, .about-section, .skills-section,
-            .projects-section, .contact-section {
+            .hero-section,
+            .about-section,
+            .skills-section,
+            .projects-section,
+            .contact-section {
                 padding: 4rem 3rem;
             }
 
-            .hero-container, .about-container {
+            .hero-container,
+            .about-container {
                 grid-template-columns: 1fr;
                 gap: 3rem;
                 text-align: center;
@@ -1525,7 +1903,8 @@
                 align-items: center;
             }
 
-            .skills-grid, .projects-grid {
+            .skills-grid,
+            .projects-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
 
@@ -1539,24 +1918,30 @@
                 margin: 0 auto;
             }
 
-            .sidebar { width: 60px; }
-            .main-content { margin-left: 60px; width: calc(100% - 60px); }
-            .arrow-left, .arrow-right { display: none !important; }
+            .sidebar {
+                width: 60px;
+            }
+
+            .main-content {
+                margin-left: 60px;
+                width: calc(100% - 60px);
+            }
+
+            .arrow-left,
+            .arrow-right {
+                display: none !important;
+            }
         }
 
-        /* --- Mobile Devices (768px) --- */
-        /* --- Mobile Devices (768px) --- */
         @media (max-width: 768px) {
-            
-            /* 1. FIXED TOP HEADER */
-            body > .logo {
+            body>.logo {
                 display: flex !important;
                 position: fixed;
                 top: 0;
                 left: 0;
                 width: 100%;
                 height: 60px;
-                background: var(--card-bg); /* Matches theme */
+                background: var(--card-bg);
                 border-bottom: 1px solid var(--card-border);
                 border-radius: 0 !important;
                 align-items: center;
@@ -1565,45 +1950,53 @@
                 backdrop-filter: blur(10px);
             }
 
+            .logo {
+                display: flex !important;
+                position: fixed;
+                top: 15px;
+                left: 20px;
+                z-index: 1001;
+                background: rgba(30, 30, 30, 0.6);
+                backdrop-filter: blur(4px);
+                padding: 5px;
+                border-radius: 50%;
+                border: 1px solid var(--card-border);
+            }
+
             .logo-img {
                 position: static !important;
                 height: 32px;
                 margin: 0;
             }
 
-            /* 2. THEME TOGGLE: FORCE VISIBILITY (The Fix) */
-            /* We use !important to override the sidebar's constraints */
             #theme-toggle {
                 position: fixed !important;
-                top: 10px !important;    /* Centers it vertically in the 60px header */
-                right: 20px !important;  /* Aligns with page padding */
+                top: 10px !important;
+                right: 20px !important;
                 width: 40px !important;
                 height: 40px !important;
-                z-index: 2147483647 !important; /* Maximum Z-Index to stay on top of EVERYTHING */
-                background: rgba(0, 0, 0, 0.2) !important; /* Slight dark bg to make it pop */
-                border: 1px solid var(--accent-blue) !important; /* Blue border to verify visibility */
+                z-index: 2147483647 !important;
+                background: rgba(0, 0, 0, 0.2) !important;
+                border: 1px solid var(--accent-blue) !important;
                 border-radius: 50% !important;
                 display: flex !important;
                 align-items: center;
                 justify-content: center;
                 margin: 0 !important;
-                color: var(--accent-blue) !important; /* Force Icon Color */
+                color: var(--accent-blue) !important;
                 font-size: 1.2rem !important;
                 cursor: pointer;
             }
 
-            /* 3. FLOATING MESSAGE BUTTON */
-            /* Lifted up to avoid the bottom navbar */
             .floating-btn {
-                bottom: 85px !important; 
+                bottom: 85px !important;
                 right: 20px !important;
-                z-index: 2100 !important; 
+                z-index: 2100 !important;
                 width: 50px;
                 height: 50px;
                 font-size: 1.5rem;
             }
 
-            /* 4. BOTTOM NAVIGATION BAR */
             .sidebar {
                 bottom: 0;
                 top: auto;
@@ -1614,9 +2007,9 @@
                 border-right: none;
                 border-top: 1px solid var(--card-border);
                 background: var(--sidebar-bg);
-                box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
                 z-index: 1999;
-                overflow: visible !important; /* crucial for children to 'escape' if needed */
+                overflow: visible !important;
             }
 
             .nav-top {
@@ -1638,7 +2031,9 @@
                 margin: 0;
             }
 
-            .nav-top .logo { display: block; }
+            .nav-top .logo {
+                display: block;
+            }
 
             .nav-item {
                 width: 100%;
@@ -1658,7 +2053,6 @@
                 background: rgba(86, 156, 214, 0.05);
             }
 
-            /* 5. CONTENT ADJUSTMENTS */
             .main-content {
                 margin-left: 0;
                 width: 100%;
@@ -1671,23 +2065,35 @@
                 padding-left: 1.5rem;
                 padding-right: 1.5rem;
             }
-            
-            .about-section, .skills-section, .projects-section, 
-            .contact-section, .education-section, .cert-section {
+
+            .about-section,
+            .skills-section,
+            .projects-section,
+            .contact-section,
+            .education-section,
+            .cert-section {
                 padding: 3rem 1.5rem;
             }
 
-            /* 6. IMAGE RESIZING */
             .image-wrapper {
                 height: 280px !important;
                 max-width: 280px;
                 margin: 0 auto 2rem;
             }
 
-            /* 7. TEXT & LAYOUT FIXES */
-            h1 { font-size: 1.8rem !important; line-height: 1.3; margin-bottom: 1rem; }
-            h2 { font-size: 1.6rem !important; }
-            .description { font-size: 0.9rem !important; }
+            h1 {
+                font-size: 1.8rem !important;
+                line-height: 1.3;
+                margin-bottom: 1rem;
+            }
+
+            h2 {
+                font-size: 1.6rem !important;
+            }
+
+            .description {
+                font-size: 0.9rem !important;
+            }
 
             .btn-group {
                 display: flex;
@@ -1724,27 +2130,49 @@
                 gap: 5px;
             }
 
-            .stat-number { font-size: 1.2rem; }
-            .stat-label { font-size: 0.7rem; white-space: normal; }
+            .stat-number {
+                font-size: 1.2rem;
+            }
 
-            /* 8. CERTIFICATES & SCROLL FIXES */
+            .stat-label {
+                font-size: 0.7rem;
+                white-space: normal;
+            }
+
             .cert-grid {
                 grid-template-columns: repeat(2, 1fr) !important;
                 gap: 10px;
             }
+
             .cert-card {
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
                 padding: 15px 10px;
             }
-            .cert-icon { margin-bottom: 10px; width: 40px; height: 40px; font-size: 1.2rem; }
-            .cert-title { font-size: 0.9rem; line-height: 1.2; margin-bottom: 4px; }
-            .cert-desc { display: none; }
-            .cert-actions { width: 100%; justify-content: center; }
 
-            .arrow-left, .arrow-right { display: none !important; }
-            
+            .cert-icon {
+                margin-bottom: 10px;
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .cert-title {
+                font-size: 0.9rem;
+                line-height: 1.2;
+                margin-bottom: 4px;
+            }
+
+            .cert-desc {
+                display: none;
+            }
+
+            .arrow-left,
+            .arrow-right {
+                display: none !important;
+            }
+
             .js-scroll-wrapper {
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
@@ -1753,24 +2181,62 @@
                 padding-bottom: 20px;
             }
 
-            .footer-section { padding: 2rem 1.5rem 90px; text-align: center; }
-            .footer-container { flex-direction: column; gap: 1rem; }
-            
-            .bento-grid, .skills-grid, .projects-grid { grid-template-columns: 1fr; }
-            .col-span-2 { grid-column: span 1; }
-            .tech-stack-section { width: 100vw; margin-left: -1.5rem; }
-            .contact-form-card { padding: 1.5rem; }
-            .timeline-wrapper { padding-left: 15px; }
-            .timeline-item { padding-left: 1.5rem; }
-            .timeline-item::before { left: -22.5px; }
+            .footer-section {
+                padding: 2rem 1.5rem 90px;
+                text-align: center;
+            }
+
+            .footer-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .bento-grid,
+            .skills-grid,
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .col-span-2 {
+                grid-column: span 1;
+            }
+
+            .tech-stack-section {
+                width: 100vw;
+                margin-left: -1.5rem;
+            }
+
+            .contact-form-card {
+                padding: 1.5rem;
+            }
+        }
+
+        #download-text span::after {
+            content: "Fetching Resume...";
+            color: var(--text-white);
+            animation: resumeLoop 2s infinite step-end;
         }
     </style>
 </head>
 
 <body>
+    <div id="download-loader" class="loader-hidden"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--dark-bg); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease, visibility 0.5s ease;">
+        <div class="loader-content">
+            <div class="loader-text" id="download-text">{<span></span>}</div>
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+
+    <div id="preloader">
+        <div class="loader-content">
+            <div class="loader-text">{<span></span>}</div>
+            <div class="loader-bar"></div>
+        </div>
+    </div>
 
     <a href="#" class="logo">
-        <img src="logo.png" alt="Logo" class="logo-img">
+        <img src="images/logo.png" alt="Logo" class="logo-img">
     </a>
 
     <div class="glow-blob blob-1"></div>
@@ -1815,48 +2281,51 @@
         <section id="home" class="hero-section">
             <div class="hero-container">
                 <div class="text-content">
-                    <div class="badge">
+                    <div class="badge hero-animate delay-1">
                         <i class="ri-star-s-fill"></i>
                         Aspiring Web Developer
                     </div>
 
-                    <h1>Hi, I'm Papia Karmakar<br>Welcome to My Digital Playground.</h1>
+                    <h1 class="hero-animate delay-2">Hi, I'm Papia Karmakar<br>Welcome to My Digital Playground.</h1>
 
-                    <p class="description">
-                        Building modern, scalable web applications with React, JavaScript,
-                        and cutting-edge technologies.
+                    <p class="description hero-animate delay-3">
+                        CSE Undergraduate @ UEM | Turning ideas into efficient, user-focused applications through code.
                     </p>
 
-                    <div class="btn-group">
+                    <div class="btn-group hero-animate delay-4">
                         <a href="#contact" class="btn btn-primary">Get in Touch</a>
-                        <a href="#resume" class="btn btn-secondary">Download Resume</a>
+                        <a href="https://drive.usercontent.google.com/download?id=1fHVcs-lroXWEFrdFCyHEeybX4ZmuB82p&export=download"
+                            class="btn btn-secondary resume-btn">Download Resume</a>
                     </div>
 
-                    <div class="stats-container">
+                    <div class="stats-container hero-animate delay-5">
                         <div class="stat-card">
-                            <div class="stat-number">2nd</div>
+                            <div class="stat-number">3rd</div>
                             <div class="stat-label">Year<br>CSE</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number">10+</div>
+                            <div class="stat-number">20+</div>
                             <div class="stat-label">Projects<br>Completed</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number">20+</div>
+                            <div class="stat-number">30+</div>
                             <div class="stat-label">Certificate<br>Achieved</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="image-wrapper">
-                    <img src="Portfolio.png" alt="Developer" class="profile-img">
+                <div class="image-wrapper hero-img-pop delay-img">
+                    <img src="images/Portfolio.png" alt="Developer" class="profile-img">
                     <div class="tech-tags">
-                        <i class="ri-html5-line tech-icon" title="HTML5"></i>
+                        <i class="ri-html5-fill tech-icon" title="HTML5"></i>
                         <i class="ri-css3-line tech-icon" title="CSS3"></i>
-                        <i class="ri-javascript-line tech-icon" title="JavaScript"></i>
-                        <i class="devicon-java-plain tech-icon" title="Java"></i>
                         <i class="ri-reactjs-line tech-icon" title="React"></i>
-                        <i class="ri-leaf-line tech-icon" title="MongoDB"></i>
+                        <i class="ri-javascript-fill tech-icon" title="JavaScript" style="font-size: 1.4rem;"></i>
+                        <i class="devicon-python-plain tech-icon" title="Python" style="font-size: 1.17rem;"></i>
+                        <i class="devicon-c-plain tech-icon" title="C" style="font-size: 1.1rem;"></i>
+                        <i class="devicon-java-plain tech-icon" title="Java"></i>
+                        <i class="devicon-r-plain tech-icon" title="R"></i>
+                        <i class="devicon-arduino-plain tech-icon" title="Arduino" style="font-size: 1.8rem;"></i>
                     </div>
                 </div>
             </div>
@@ -1866,13 +2335,13 @@
             <div class="about-container">
                 <div class="about-text">
                     <div class="badge">
-                        <i class="ri-code-box-line"></i> Full-Stack Developer
+                        <i class="ri-code-box-line"></i> Aspiring Full-Stack Developer
                     </div>
 
                     <h2>Learning, Building & Growing<br>as a Developer</h2>
 
                     <p class="description">
-                        I am a B.Tech first-year Computer Science student at UEM with a strong interest
+                        I am a B.Tech second-year Computer Science student at UEM with a strong interest
                         in web development, AI, and software design. I enjoy learning by building
                         projects and experimenting with new technologies.
                     </p>
@@ -1884,7 +2353,7 @@
 
                     <div class="about-stats-row">
                         <div class="about-stat-item">
-                            <h4>10+</h4>
+                            <h4>20+</h4>
                             <span>Academic Projects</span>
                         </div>
                         <div class="about-stat-item">
@@ -1893,12 +2362,12 @@
                         </div>
                         <div class="about-stat-item">
                             <h4>500+</h4>
-                            <span>Continuous Learner</span>
+                            <span>Contributions</span>
                         </div>
                     </div>
 
-                    <a href="#resume" class="btn btn-secondary"
-                        style="border-radius: 4px; padding: 10px 24px; font-size: 0.9rem;">
+                    <a href="https://drive.usercontent.google.com/download?id=1fHVcs-lroXWEFrdFCyHEeybX4ZmuB82p&export=download"
+                        class="btn btn-secondary second-resume-btn resume-btn">
                         <i class="ri-download-line"></i> Download Resume
                     </a>
                 </div>
@@ -1931,16 +2400,18 @@
 
                     <div class="bento-card col-span-2 mini-stats-bar">
                         <div class="mini-stat">
-                            <span class="val">100%</span>
-                            <span class="lbl">Client Satisfaction</span>
+                            <span class="val">10+</span>
+                            <span class="lbl">Hackathons</span>
                         </div>
+
                         <div class="mini-stat">
-                            <span class="val">24/7</span>
-                            <span class="lbl">Support Available</span>
+                            <span class="val">4+ Years</span>
+                            <span class="lbl">Coding Journey</span>
                         </div>
+
                         <div class="mini-stat">
-                            <span class="val">Fast</span>
-                            <span class="lbl">Delivery Time</span>
+                            <span class="val">35+</span>
+                            <span class="lbl">GitHub Repos</span>
                         </div>
                     </div>
 
@@ -1951,7 +2422,19 @@
                 <h3 class="section-title-center">My Development Toolbox</h3>
 
                 <div class="scroller" data-direction="left" data-speed="slow">
-                    <div class="scroller__inner">
+                    <div class="scroller__inner" id="toolsContainer">
+                        <div class="tech-card">
+                            <i class="ri-html5-fill"></i>
+                            <span>HTML</span>
+                        </div>
+                        <div class="tech-card">
+                            <i class="ri-css3-fill"></i>
+                            <span>CSS</span>
+                        </div>
+                        <div class="tech-card">
+                            <i class="ri-javascript-fill"></i>
+                            <span>JavaScript</span>
+                        </div>
                         <div class="tech-card">
                             <i class="ri-reactjs-fill"></i>
                             <span>React</span>
@@ -1959,14 +2442,6 @@
                         <div class="tech-card">
                             <i class="ri-nodejs-fill"></i>
                             <span>Node.js</span>
-                        </div>
-                        <div class="tech-card">
-                            <i class="ri-leaf-fill"></i>
-                            <span>MongoDB</span>
-                        </div>
-                        <div class="tech-card">
-                            <i class="ri-nextjs-fill"></i>
-                            <span>Next.js</span>
                         </div>
                         <div class="tech-card">
                             <i class="ri-database-2-line"></i>
@@ -1977,12 +2452,24 @@
                             <span>Java</span>
                         </div>
                         <div class="tech-card">
-                            <i class="devicon-python-plain"></i>
+                            <i class="devicon-python-plain" style="font-size: 1.3rem;"></i>
                             <span>Python</span>
+                        </div>
+                        <div class="tech-card">
+                            <i class="devicon-c-plain" style="font-size: 1.2rem;"></i>
+                            <span>Programming</span>
                         </div>
                         <div class="tech-card">
                             <i class="ri-github-fill"></i>
                             <span>Git</span>
+                        </div>
+                        <div class="tech-card">
+                            <i class="devicon-matlab-plain" style="font-size: 1.2rem;"></i>
+                            <span>Matlab</span>
+                        </div>
+                        <div class="tech-card">
+                            <i class="devicon-r-plain" style="font-size: 1.2rem;"></i>
+                            <span>Programming</span>
                         </div>
                         <div class="tech-card">
                             <i class="ri-openai-fill"></i>
@@ -2000,48 +2487,84 @@
                 </div>
                 <h2>Educational Background</h2>
                 <p class="description" style="margin: 0 auto; max-width: 600px;">
-                    My academic milestones and qualifications.
+                    Select an editor tab below to view full milestone configuration details.
                 </p>
             </div>
 
-            <div class="education-container">
-                <div class="timeline-wrapper">
+            <!-- IDE Environment Dashboard Layout Wrapper -->
+            <div class="ide-container">
+                <!-- Top Tabs Navigation -->
+                <div class="ide-tabs">
+                    <div class="ide-tab active" data-target="college-file">
+                        <i class="ri-file-code-fill file-icon" style="color:#569cd6;"></i>
+                        <span>University.json</span>
+                    </div>
+                    <div class="ide-tab" data-target="hs-file">
+                        <i class="ri-file-code-fill file-icon" style="color:#4ec9b0;"></i>
+                        <span>HighSchool.cpp</span>
+                    </div>
+                    <div class="ide-tab" data-target="secondary-file">
+                        <i class="ri-file-code-fill file-icon" style="color:#ce9178;"></i>
+                        <span>Secondary.html</span>
+                    </div>
+                </div>
 
-                    <div class="timeline-item">
-                        <span class="timeline-date">2024 – Present</span>
-                        <h3 class="timeline-title">B.Tech Second-Year:</h3>
-                        <h4 class="timeline-subtitle">University of Engineering & Management</h4>
-                        <p class="timeline-desc">
-                            Current student with a focus on building a strong foundation in computer science principles
-                            and practical applications.
-                        </p>
+                <!-- Window Inner Body Panels -->
+                <div class="ide-body">
+                    <!-- Left Gutter Line Indexing numbers -->
+                    <div class="ide-line-numbers">
+                        <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
                     </div>
 
-                    <div class="timeline-item">
-                        <span class="timeline-date">2022 – 2024</span>
-                        <h3 class="timeline-title">Higher Secondary(Science):</h3>
-                        <h4 class="timeline-subtitle">Bishnupur Sir Romesh Institution</h4>
-                        <p class="timeline-desc">
-                            Studied core subjects including Physics, Chemistry, Math and Computer Science, laying the
-                            groundwork for engineering studies. Also cleared JEE Mains in this year.
-                        </p>
-                    </div>
+                    <!-- Right Main Content Terminal Window -->
+                    <div class="ide-content-panel">
+                        
+                        <!-- TAB 1 CONTENT -->
+                        <div class="edu-file-content active" id="college-file">
+                            <span class="syntax-comment">// Current active path specification</span>
+                            <p><span class="syntax-keyword">const</span> <span class="syntax-name">educationMilestone</span> = {</p>
+                            <ul class="edu-details-list">
+                                <li><span class="syntax-keyword">period:</span> <span class="syntax-string">"2026 – Present"</span></li>
+                                <li><span class="syntax-keyword">degree:</span> <span class="syntax-string">"B.Tech (Third Year)"</span></li>
+                                <li><span class="syntax-keyword">institution:</span> <span class="syntax-string">"University of Engineering & Management"</span></li>
+                                <li><span class="syntax-keyword">focus:</span> <span class="syntax-string">"Core computation models, algorithms, and full-stack software lifecycle solutions."</span></li>
+                            </ul>
+                            <p>};</p>
+                        </div>
 
-                    <div class="timeline-item">
-                        <span class="timeline-date">2016 – 2022</span>
-                        <h3 class="timeline-title">Secondary Education:</h3>
-                        <h4 class="timeline-subtitle">Chandpur Govt. Sponsored High School</h4>
-                        <p class="timeline-desc">
-                            Completed general secondary education with a focus on science and mathematics which prepared
-                            me for higher-level studies in engineering.
-                        </p>
-                    </div>
+                        <!-- TAB 2 CONTENT -->
+                        <div class="edu-file-content" id="hs-file">
+                            <span class="syntax-comment">// High school science program file specs</span>
+                            <p><span class="syntax-keyword">void</span> <span class="syntax-name">getHighSchoolSpecs</span>() {</p>
+                            <ul class="edu-details-list">
+                                <li><span class="syntax-keyword">timeline</span> = <span class="syntax-string">"2022 – 2024"</span>;</li>
+                                <li><span class="syntax-keyword">certification</span> = <span class="syntax-string">"Higher Secondary (Science)"</span>;</li>
+                                <li><span class="syntax-keyword">school</span> = <span class="syntax-string">"Bishnupur Sir Romesh Institution"</span>;</li>
+                                <li><span class="syntax-keyword">milestone</span> = <span class="syntax-string">"Core Physics, Chemistry, Mathematics & CS. Cleared JEE Mains."</span>;</li>
+                            </ul>
+                            <p>}</p>
+                        </div>
 
+                        <!-- TAB 3 CONTENT -->
+                        <div class="edu-file-content" id="secondary-file">
+                            <span class="syntax-comment">&lt;!-- Elementary foundation markup structural details --&gt;</span>
+                            <p>&lt;<span class="syntax-keyword">div</span> <span class="syntax-name">class</span>=<span class="syntax-string">"foundation-metrics"</span>&gt;</p>
+                            <ul class="edu-details-list">
+                                <li>&lt;<span class="syntax-keyword">span</span>&gt;Year: <span class="syntax-string">"2016 – 2022"</span>&lt;/<span class="syntax-keyword">span</span>&gt;</li>
+                                <li>&lt;<span class="syntax-keyword">h4</span>&gt;Degree: <span class="syntax-string">"Secondary Education"</span>&lt;/<span class="syntax-keyword">h4</span>&gt;</li>
+                                <li>&lt;<span class="syntax-keyword">p</span>&gt;School: <span class="syntax-string">"Chandpur Govt. Sponsored High School"</span>&lt;/<span class="syntax-keyword">p</span>&gt;</li>
+                                <li>&lt;<span class="syntax-keyword">p</span>&gt;Summary: <span class="syntax-string">"Formed analytical grounds in logic metrics and scientific concepts."</span>&lt;/<span class="syntax-keyword">p</span>&gt;</li>
+                            </ul>
+                            <p>&lt;/<span class="syntax-keyword">div</span>&gt;</p>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </section>
 
         <section id="skills" class="skills-section">
+            <div id="skills-trigger"></div>
             <div class="skills-container">
                 <div class="skills-header">
                     <div class="badge" style="margin-bottom: 1rem;">
@@ -2053,7 +2576,7 @@
                     </p>
                 </div>
 
-                <div class="skills-grid">
+                <div class="skills-grid" id="skillsContainer">
 
                     <div class="skill-category-card">
                         <h3 class="category-title">Frontend Development</h3>
@@ -2061,7 +2584,7 @@
                             <div class="skill-item">
                                 <div class="skill-top-row">
                                     <div class="skill-icon-box">
-                                        <i class="ri-code-s-slash-line"></i>
+                                        <i class="ri-html5-fill"></i>
                                     </div>
                                     <div class="skill-text-area">
                                         <div class="skill-name-group">
@@ -2072,13 +2595,13 @@
                                     </div>
                                 </div>
                                 <div class="skill-bar-track">
-                                    <div class="skill-bar-fill" style="width: 95%"></div>
+                                    <div class="skill-bar-fill" data-percentage="95%"></div>
                                 </div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-top-row">
                                     <div class="skill-icon-box">
-                                        <i class="ri-javascript-line"></i>
+                                        <i class="ri-css3-fill"></i>
                                     </div>
                                     <div class="skill-text-area">
                                         <div class="skill-name-group">
@@ -2089,13 +2612,13 @@
                                     </div>
                                 </div>
                                 <div class="skill-bar-track">
-                                    <div class="skill-bar-fill" style="width: 90%"></div>
+                                    <div class="skill-bar-fill" data-percentage="90%"></div>
                                 </div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-top-row">
                                     <div class="skill-icon-box">
-                                        <i class="ri-file-code-line"></i>
+                                        <i class="devicon-javascript-plain"></i>
                                     </div>
                                     <div class="skill-text-area">
                                         <div class="skill-name-group">
@@ -2106,24 +2629,24 @@
                                     </div>
                                 </div>
                                 <div class="skill-bar-track">
-                                    <div class="skill-bar-fill" style="width: 80%"></div>
+                                    <div class="skill-bar-fill" data-percentage="80%"></div>
                                 </div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-top-row">
                                     <div class="skill-icon-box">
-                                        <i class="ri-nextjs-line"></i>
+                                        <i class="ri-reactjs-line"></i>
                                     </div>
                                     <div class="skill-text-area">
                                         <div class="skill-name-group">
-                                            <span class="skill-name">Tailwind CSS</span>
+                                            <span class="skill-name">React</span>
                                             <span class="skill-years">1+ years</span>
                                         </div>
                                         <span class="proficiency-badge">Learning</span>
                                     </div>
                                 </div>
                                 <div class="skill-bar-track">
-                                    <div class="skill-bar-fill" style="width: 85%"></div>
+                                    <div class="skill-bar-fill" data-percentage="40%"></div>
                                 </div>
                             </div>
                             <div class="skill-item">
@@ -2140,7 +2663,7 @@
                                     </div>
                                 </div>
                                 <div class="skill-bar-track">
-                                    <div class="skill-bar-fill" style="width: 95%"></div>
+                                    <div class="skill-bar-fill" data-percentage="95%"></div>
                                 </div>
                             </div>
                         </div>
@@ -2152,7 +2675,7 @@
                             <div class="skill-item">
                                 <div class="skill-top-row">
                                     <div class="skill-icon-box">
-                                        <i class="ri-server-line"></i>
+                                        <i class="devicon-c-plain"></i>
                                     </div>
                                     <div class="skill-text-area">
                                         <div class="skill-name-group">
@@ -2163,13 +2686,13 @@
                                     </div>
                                 </div>
                                 <div class="skill-bar-track">
-                                    <div class="skill-bar-fill" style="width: 65%"></div>
+                                    <div class="skill-bar-fill" data-percentage="65%"></div>
                                 </div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-top-row">
                                     <div class="skill-icon-box">
-                                        <i class="ri-global-line"></i>
+                                        <i class="devicon-python-plain"></i>
                                     </div>
                                     <div class="skill-text-area">
                                         <div class="skill-name-group">
@@ -2180,24 +2703,24 @@
                                     </div>
                                 </div>
                                 <div class="skill-bar-track">
-                                    <div class="skill-bar-fill" style="width: 85%"></div>
+                                    <div class="skill-bar-fill" data-percentage="85%"></div>
                                 </div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-top-row">
                                     <div class="skill-icon-box">
-                                        <i class="ri-global-line"></i>
+                                        <i class="devicon-javascript-plain"></i>
                                     </div>
                                     <div class="skill-text-area">
                                         <div class="skill-name-group">
-                                            <span class="skill-name">Node.js</span>
+                                            <span class="skill-name">JavaScript</span>
                                             <span class="skill-years">1+ years</span>
                                         </div>
-                                        <span class="proficiency-badge">Learning</span>
+                                        <span class="proficiency-badge">Comfortable</span>
                                     </div>
                                 </div>
                                 <div class="skill-bar-track">
-                                    <div class="skill-bar-fill" style="width: 85%"></div>
+                                    <div class="skill-bar-fill" data-percentage="80%"></div>
                                 </div>
                             </div>
                             <div class="skill-item">
@@ -2214,7 +2737,7 @@
                                     </div>
                                 </div>
                                 <div class="skill-bar-track">
-                                    <div class="skill-bar-fill" style="width: 85%"></div>
+                                    <div class="skill-bar-fill" data-percentage="40%"></div>
                                 </div>
                             </div>
                         </div>
@@ -2226,7 +2749,7 @@
                             <div class="skill-item">
                                 <div class="skill-top-row">
                                     <div class="skill-icon-box">
-                                        <i class="ri-git-branch-line"></i>
+                                        <i class="devicon-git-plain"></i>
                                     </div>
                                     <div class="skill-text-area">
                                         <div class="skill-name-group">
@@ -2237,30 +2760,30 @@
                                     </div>
                                 </div>
                                 <div class="skill-bar-track">
-                                    <div class="skill-bar-fill" style="width: 88%"></div>
+                                    <div class="skill-bar-fill" data-percentage="88%"></div>
                                 </div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-top-row">
                                     <div class="skill-icon-box">
-                                        <i class="ri-smartphone-line"></i>
+                                        <i class="ri-bar-chart-fill"></i>
                                     </div>
                                     <div class="skill-text-area">
                                         <div class="skill-name-group">
-                                            <span class="skill-name">Responsive</span>
+                                            <span class="skill-name">Data Analysis</span>
                                             <span class="skill-years">2+ years</span>
                                         </div>
                                         <span class="proficiency-badge">Intermediate</span>
                                     </div>
                                 </div>
                                 <div class="skill-bar-track">
-                                    <div class="skill-bar-fill" style="width: 98%"></div>
+                                    <div class="skill-bar-fill" data-percentage="50%"></div>
                                 </div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-top-row">
                                     <div class="skill-icon-box">
-                                        <i class="ri-rocket-line"></i>
+                                        <i class="devicon-vscode-plain"></i>
                                     </div>
                                     <div class="skill-text-area">
                                         <div class="skill-name-group">
@@ -2271,30 +2794,30 @@
                                     </div>
                                 </div>
                                 <div class="skill-bar-track">
-                                    <div class="skill-bar-fill" style="width: 80%"></div>
+                                    <div class="skill-bar-fill" data-percentage="80%"></div>
                                 </div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-top-row">
                                     <div class="skill-icon-box">
-                                        <i class="ri-pen-nib-line"></i>
+                                        <i class="devicon-bootstrap-plain"></i>
                                     </div>
                                     <div class="skill-text-area">
                                         <div class="skill-name-group">
-                                            <span class="skill-name">Figma</span>
+                                            <span class="skill-name">Responsive Design</span>
                                             <span class="skill-years">1+ years</span>
                                         </div>
                                         <span class="proficiency-badge">Intermediate</span>
                                     </div>
                                 </div>
                                 <div class="skill-bar-track">
-                                    <div class="skill-bar-fill" style="width: 60%"></div>
+                                    <div class="skill-bar-fill" data-percentage="60%"></div>
                                 </div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-top-row">
                                     <div class="skill-icon-box">
-                                        <i class="ri-rocket-line"></i>
+                                        <i class="devicon-arduino-plain"></i>
                                     </div>
                                     <div class="skill-text-area">
                                         <div class="skill-name-group">
@@ -2305,7 +2828,7 @@
                                     </div>
                                 </div>
                                 <div class="skill-bar-track">
-                                    <div class="skill-bar-fill" style="width: 80%"></div>
+                                    <div class="skill-bar-fill" data-percentage="50%"></div>
                                 </div>
                             </div>
                         </div>
@@ -2327,143 +2850,237 @@
             </div>
 
             <div class="skills-container">
-                <div class="cert-grid">
+                <div class="cert-grid" id="certGrid">
 
-                    <div class="cert-card">
-                        <div class="cert-icon">
-                            <i class="devicon-python-plain"></i>
-                        </div>
-                        <div class="cert-content">
-                            <div class="cert-title">Data Structures and Algorithms Design</div>
-                            <div class="cert-issuer">
-                                NPTEL <i class="ri-verified-badge-fill verified-icon"></i>
+                    <a href="https://drive.google.com/file/d/1lBWBFr0KhmghxPCiXlhUMiSNoF5lry7h/view" target="_blank"
+                        class="cert-card-link">
+                        <div class="cert-card">
+                            <div class="cert-icon">
+                                <i class="devicon-python-plain"></i>
                             </div>
-                            <p class="cert-desc">Comprehensive training on Python programming, data analysis libraries
-                                (Pandas, NumPy), and visualization techniques.</p>
-                            <div class="cert-actions">
-                                <button class="install-btn">Verify Credential</button>
+                            <div class="cert-content">
+                                <div class="cert-title">Google AI Professional Certificate</div>
+                                <div class="cert-issuer">
+                                    Coursera | Google <i class="ri-verified-badge-fill verified-icon"></i>
+                                </div>
+                                <p class="cert-desc">Completed a 7-course series focused on AI-driven data analysis, app
+                                    building, and workplace efficiency. I built a portfolio of 20+ artifacts and
+                                    developed custom AI solutions using effective prompting and vibe coding.</p>
                             </div>
                         </div>
-                    </div>
+                    </a>
 
-                    <div class="cert-card">
-                        <div class="cert-icon">
-                            <i class="ri-reactjs-fill"></i>
-                        </div>
-                        <div class="cert-content">
-                            <div class="cert-title">ReactJS - The Complete Guide</div>
-                            <div class="cert-issuer">
-                                Udemy <i class="ri-verified-badge-fill verified-icon"></i>
+                    <a href="https://drive.google.com/file/d/15XV0o7HQBSQcpTj-1q8iX_tLxk1G1uOy/view" target="_blank"
+                        class="cert-card-link">
+                        <div class="cert-card">
+                            <div class="cert-icon">
+                                <i class="devicon-python-plain"></i>
                             </div>
-                            <p class="cert-desc">Mastered modern React concepts including Hooks, Redux, Context API, and
-                                Next.js framework fundamentals.</p>
-                            <div class="cert-actions">
-                                <button class="install-btn">Verify Credential</button>
+                            <div class="cert-content">
+                                <div class="cert-title">Fundamentals of Object Oriented Programming</div>
+                                <div class="cert-issuer">
+                                    NPTEL | IIT Roorkee <i class="ri-verified-badge-fill verified-icon"></i>
+                                </div>
+                                <p class="cert-desc">A 12 week certification course funded by the MoE, Govt. of India,
+                                    covering the core principles of object oriented programming.</p>
                             </div>
                         </div>
-                    </div>
+                    </a>
 
-                    <div class="cert-card">
-                        <div class="cert-icon">
-                            <i class="ri-database-2-fill"></i>
-                        </div>
-                        <div class="cert-content">
-                            <div class="cert-title">Database Management Systems</div>
-                            <div class="cert-issuer">
-                                NPTEL <i class="ri-verified-badge-fill verified-icon"></i>
+                    <a href="https://drive.google.com/file/d/1J4T-f4roy4vzZRa79nL5IzwZluAB__ml/view" target="_blank"
+                        class="cert-card-link">
+                        <div class="cert-card">
+                            <div class="cert-icon">
+                                <i class="devicon-python-plain"></i>
                             </div>
-                            <p class="cert-desc">In-depth study of SQL, normalization, transaction management, and NoSQL
-                                database concepts.</p>
-                            <div class="cert-actions">
-                                <button class="install-btn">Verify Credential</button>
+                            <div class="cert-content">
+                                <div class="cert-title">Data Structures and Algorithms Design</div>
+                                <div class="cert-issuer">
+                                    NPTEL | IIT Kanpur <i class="ri-verified-badge-fill verified-icon"></i>
+                                </div>
+                                <p class="cert-desc">Comprehensive study of data structures and algorithm design
+                                    techniques, including arrays, stacks, queues, linked lists, trees, graphs, sorting,
+                                    searching, recursion, and complexity analysis.</p>
                             </div>
                         </div>
-                    </div>
+                    </a>
 
-                    <div class="cert-card">
-                        <div class="cert-icon">
-                            <i class="ri-database-2-fill"></i>
-                        </div>
-                        <div class="cert-content">
-                            <div class="cert-title">Database Management Systems</div>
-                            <div class="cert-issuer">
-                                NPTEL <i class="ri-verified-badge-fill verified-icon"></i>
+                    <a href="https://drive.google.com/file/d/1IB_m_5A2a4Tdsendcaug091X4x7je8ib/view" target="_blank"
+                        class="cert-card-link">
+                        <div class="cert-card">
+                            <div class="cert-icon">
+                                <i class="devicon-python-plain"></i>
                             </div>
-                            <p class="cert-desc">In-depth study of SQL, normalization, transaction management, and NoSQL
-                                database concepts.</p>
-                            <div class="cert-actions">
-                                <button class="install-btn">Verify Credential</button>
+                            <div class="cert-content">
+                                <div class="cert-title">The Joy of Computing using Python</div>
+                                <div class="cert-issuer">
+                                    NPTEL | IIT Madras <i class="ri-verified-badge-fill verified-icon"></i>
+                                </div>
+                                <p class="cert-desc">Explored computational thinking and problem solving using Python,
+                                    covering basics of programming, conditionals, loops, functions, data structures,
+                                    algorithms, and real world applications.</p>
                             </div>
                         </div>
-                    </div>
+                    </a>
 
-                    <div class="cert-card">
-                        <div class="cert-icon">
-                            <i class="ri-database-2-fill"></i>
-                        </div>
-                        <div class="cert-content">
-                            <div class="cert-title">Database Management Systems</div>
-                            <div class="cert-issuer">
-                                NPTEL <i class="ri-verified-badge-fill verified-icon"></i>
+                    <a href="https://drive.google.com/file/d/1eA7s5z_NBakCnsGnN-ruiXNaZhKn6lTa/view" target="_blank"
+                        class="cert-card-link">
+                        <div class="cert-card">
+                            <div class="cert-icon">
+                                <i class="devicon-python-plain"></i>
                             </div>
-                            <p class="cert-desc">In-depth study of SQL, normalization, transaction management, and NoSQL
-                                database concepts.</p>
-                            <div class="cert-actions">
-                                <button class="install-btn">Verify Credential</button>
+                            <div class="cert-content">
+                                <div class="cert-title">Programming, Data Structures and Algorithms Using Python</div>
+                                <div class="cert-issuer">
+                                    NPTEL | IIT Madras <i class="ri-verified-badge-fill verified-icon"></i>
+                                </div>
+                                <p class="cert-desc">An 8 week certification course funded by the MoE, Govt. of India,
+                                    covering Python programming along with data structures and algorithms.</p>
                             </div>
                         </div>
-                    </div>
+                    </a>
 
-                    <div class="cert-card">
-                        <div class="cert-icon">
-                            <i class="ri-database-2-fill"></i>
-                        </div>
-                        <div class="cert-content">
-                            <div class="cert-title">Database Management Systems</div>
-                            <div class="cert-issuer">
-                                NPTEL <i class="ri-verified-badge-fill verified-icon"></i>
+                    <a href="https://drive.google.com/file/d/1Ag3aSgNtkUw3f9Q-gnS9i3SpxXiF1XtR/view" target="_blank"
+                        class="cert-card-link">
+                        <div class="cert-card">
+                            <div class="cert-icon">
+                                <i class="devicon-python-plain"></i>
                             </div>
-                            <p class="cert-desc">In-depth study of SQL, normalization, transaction management, and NoSQL
-                                database concepts.</p>
-                            <div class="cert-actions">
-                                <button class="install-btn">Verify Credential</button>
+                            <div class="cert-content">
+                                <div class="cert-title">Problem Solving through Programming in C</div>
+                                <div class="cert-issuer">
+                                    NPTEL | IIT Kharagpur <i class="ri-verified-badge-fill verified-icon"></i>
+                                </div>
+                                <p class="cert-desc">Focused on structured problem solving using the C programming
+                                    language, covering variables, data types, control structures, loops, functions,
+                                    arrays, pointers, recursion, and fundamental algorithmic thinking.</p>
                             </div>
                         </div>
-                    </div>
+                    </a>
 
-                    <div class="cert-card">
-                        <div class="cert-icon">
-                            <i class="ri-database-2-fill"></i>
-                        </div>
-                        <div class="cert-content">
-                            <div class="cert-title">Database Management Systems</div>
-                            <div class="cert-issuer">
-                                NPTEL <i class="ri-verified-badge-fill verified-icon"></i>
+                    <a href="https://drive.google.com/file/d/1iaEZX0k7uHMGel13FgvPRxkhHmKtNejq/view" target="_blank"
+                        class="cert-card-link">
+                        <div class="cert-card">
+                            <div class="cert-icon">
+                                <i class="devicon-python-plain"></i>
                             </div>
-                            <p class="cert-desc">In-depth study of SQL, normalization, transaction management, and NoSQL
-                                database concepts.</p>
-                            <div class="cert-actions">
-                                <button class="install-btn">Verify Credential</button>
+                            <div class="cert-content">
+                                <div class="cert-title">Programming in Modern C++</div>
+                                <div class="cert-issuer">
+                                    NPTEL | IIT Kharagpur <i class="ri-verified-badge-fill verified-icon"></i>
+                                </div>
+                                <p class="cert-desc">A 12-week certification course covering the concepts and practical
+                                    applications of the modern C++ programming language.</p>
                             </div>
                         </div>
-                    </div>
+                    </a>
 
-                    <div class="cert-card">
-                        <div class="cert-icon">
-                            <i class="ri-award-fill"></i>
-                        </div>
-                        <div class="cert-content">
-                            <div class="cert-title">Smart India Hackathon Finalist</div>
-                            <div class="cert-issuer">
-                                Govt. of India <i class="ri-verified-badge-fill verified-icon"></i>
+                    <a href="https://drive.google.com/file/d/12PTgan5wQDiTAPD194J81d7tFD6Q9wJb/view" target="_blank"
+                        class="cert-card-link">
+                        <div class="cert-card">
+                            <div class="cert-icon">
+                                <i class="devicon-python-plain"></i>
                             </div>
-                            <p class="cert-desc">Selected as a finalist for developing an innovative solution for
-                                agricultural supply chain management.</p>
-                            <div class="cert-actions">
-                                <button class="install-btn">View Project</button>
+                            <div class="cert-content">
+                                <div class="cert-title">Introduction to Internet of Things</div>
+                                <div class="cert-issuer">
+                                    NPTEL | IIT Kharagpur <i class="ri-verified-badge-fill verified-icon"></i>
+                                </div>
+                                <p class="cert-desc">A 12 week certification course providing a comprehensive overview
+                                    of the Internet of Things framework.</p>
                             </div>
                         </div>
-                    </div>
+                    </a>
+
+                    <a href="https://drive.google.com/file/d/1bkSOVWjEPIDQkFoIe3k_dsWknmle-dIM/view" target="_blank"
+                        class="cert-card-link">
+                        <div class="cert-card">
+                            <div class="cert-icon">
+                                <i class="devicon-python-plain"></i>
+                            </div>
+                            <div class="cert-content">
+                                <div class="cert-title">Ignite India</div>
+                                <div class="cert-issuer">
+                                    Wadhwani Foundation <i class="ri-verified-badge-fill verified-icon"></i>
+                                </div>
+                                <p class="cert-desc">Entrepreneurship and innovation focused program covering startup
+                                    mindset, problem solving, business fundamentals, ideation, leadership skills, and
+                                    real world entrepreneurial readiness.</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="https://drive.google.com/file/d/1dK8AxR_wAQqIkrongPN4Tx59BjBqtmV4/view" target="_blank"
+                        class="cert-card-link">
+                        <div class="cert-card">
+                            <div class="cert-icon">
+                                <i class="devicon-python-plain"></i>
+                            </div>
+                            <div class="cert-content">
+                                <div class="cert-title">Cyber Security Fundamentals</div>
+                                <div class="cert-issuer">
+                                    Coursera | University of London <i class="ri-verified-badge-fill verified-icon"></i>
+                                </div>
+                                <p class="cert-desc">Foundational training in cybersecurity concepts including threat
+                                    analysis, risk management, network security, cryptography basics, and security best
+                                    practices.</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="https://drive.google.com/file/d/184zuG8GerIIjgfw7TPj0FVrC8auBlDf3/view" target="_blank"
+                        class="cert-card-link">
+                        <div class="cert-card">
+                            <div class="cert-icon">
+                                <i class="devicon-python-plain"></i>
+                            </div>
+                            <div class="cert-content">
+                                <div class="cert-title">JavaScript for Web Development</div>
+                                <div class="cert-issuer">
+                                    Coursera | Board Infinity <i class="ri-verified-badge-fill verified-icon"></i>
+                                </div>
+                                <p class="cert-desc">Gained handson experience with core JavaScript concepts including
+                                    variables, functions, DOM manipulation, events, ES6 features, and client side web
+                                    interactivity.</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="https://drive.google.com/file/d/1c7uU4pUTVPaPC1kGYb6XbvCLXhsMVn6P/view" target="_blank"
+                        class="cert-card-link">
+                        <div class="cert-card">
+                            <div class="cert-icon">
+                                <i class="devicon-python-plain"></i>
+                            </div>
+                            <div class="cert-content">
+                                <div class="cert-title">Introduction to Front End Development</div>
+                                <div class="cert-issuer">
+                                    Coursera | Meta <i class="ri-verified-badge-fill verified-icon"></i>
+                                </div>
+                                <p class="cert-desc">An online course authorized by Meta and offered through Coursera,
+                                    taught by Meta experts. This course covers the foundational skills required for
+                                    front end development.</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="https://drive.google.com/file/d/1Acz6HBrB5q3sGYzD_eGupKeZ2fWzbyvQ/view" target="_blank"
+                        class="cert-card-link">
+                        <div class="cert-card">
+                            <div class="cert-icon">
+                                <i class="devicon-python-plain"></i>
+                            </div>
+                            <div class="cert-content">
+                                <div class="cert-title">Introduction to Modern Web Development with ASP.NET Core</div>
+                                <div class="cert-issuer">
+                                    Coursera | EDUCBA <i class="ri-verified-badge-fill verified-icon"></i>
+                                </div>
+                                <p class="cert-desc">Learned modern web development concepts using ASP.NET Core,
+                                    including MVC architecture, routing, controllers, Razor views, middleware, and
+                                    building scalable, secure web applications.</p>
+                            </div>
+                        </div>
+                    </a>
 
                 </div>
             </div>
@@ -2477,7 +3094,8 @@
                     </div>
                     <h2>Featured Projects</h2>
                     <p class="description" style="margin: 0 auto; max-width: 600px;">
-                        Showcasing my best work and achievements.
+                        Selected work that demonstrates my problem-solving skills, technical depth, and real-world
+                        application of software development concepts.
                     </p>
                 </div>
 
@@ -2507,126 +3125,168 @@
 
                     <div class="project-card">
                         <div class="project-img-wrapper">
-                            <img src="Project1.png"
-                                alt="E-Commerce" class="project-img">
+                            <img src="images/Project1.png" alt="Personal Portfolio" class="project-img">
                             <span class="project-type-badge">Full Stack</span>
                             <div class="project-links">
-                                <a href="#" class="project-link-btn" title="View Code">
+                                <a href="https://github.com/papia-tech/Portfolio" class="project-link-btn"
+                                    title="View Code" target="_blank">
                                     <i class="ri-github-fill"></i>
                                 </a>
-                                <a href="#" class="project-link-btn" title="Live Demo">
+                                <a href="#" class="project-link-btn" title="Live Demo" target="_blank">
                                     <i class="ri-external-link-line"></i>
                                 </a>
                             </div>
                         </div>
                         <div class="project-content">
-                            <h3 class="project-title">Portfolio Showcase</h3>
-                            <p class="project-desc">Full-stack online shopping application with real-time inventory
-                                management, secure payment processing, and admin dashboard.</p>
+                            <h3 class="project-title">Personal Developer Portfolio</h3>
+                            <p class="project-desc">
+                                A responsive, VS Code-inspired portfolio website featuring a custom dark/light theme
+                                toggle, bento-grid layout, and interactive scroll animations.
+                            </p>
                             <div class="project-tech-stack">
-                                <span class="tech-pill">HTML</span>
-                                <span class="tech-pill">CSS</span>
+                                <span class="tech-pill">HTML5</span>
+                                <span class="tech-pill">CSS3</span>
                                 <span class="tech-pill">JavaScript</span>
-                                <span class="tech-pill">Node.js</span>
+                                <span class="tech-pill">Remix Icons</span>
+                                <span class="tech-pill">JSON</span>
                             </div>
+
+                            <span class="section-label">Key Learnings:</span>
+                            <ul class="learning-list">
+                                <li class="learning-item">Managing Theme State (Dark/Light) via DOM</li>
+                                <li class="learning-item">Advanced CSS Grid & Flexbox layouts</li>
+                                <li class="learning-item">Implementing smooth scroll animations</li>
+                            </ul>
+
                             <div class="project-stat">
-                                <i class="ri-line-chart-line"></i> 40% increase in conversion
+                                <i class="ri-magic-line"></i> Dynamic Theme Engine
                             </div>
                         </div>
                     </div>
 
                     <div class="project-card">
                         <div class="project-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1000&auto=format&fit=crop"
-                                alt="Dashboard" class="project-img">
+                            <img src="images/Project2.png" alt="SharePlate Dashboard" class="project-img">
                             <span class="project-type-badge">Web Apps</span>
                             <div class="project-links">
-                                <a href="#" class="project-link-btn" title="View Code">
+                                <a href="https://github.com/papia-tech/SharePlate" class="project-link-btn"
+                                    title="View Code" target="_blank">
                                     <i class="ri-github-fill"></i>
                                 </a>
-                                <a href="#" class="project-link-btn" title="Live Demo">
+                                <a href="https://papia-tech.github.io/SharePlate/" class="project-link-btn"
+                                    title="Live Demo" target="_blank">
                                     <i class="ri-external-link-line"></i>
                                 </a>
                             </div>
                         </div>
                         <div class="project-content">
-                            <h3 class="project-title">Share Plate</h3>
-                            <p class="project-desc">Collaborative project management tool with drag-and-drop kanban
-                                boards, real-time updates, and team analytics.</p>
+                            <h3 class="project-title">SharePlate | Food Rescue Platform</h3>
+                            <p class="project-desc">
+                                A real-time PWA connecting restaurants with surplus food to NGOs. Features smart
+                                matching algorithms, impact tracking, and offline capabilities.
+                            </p>
                             <div class="project-tech-stack">
-                                <span class="tech-pill">HTML</span>
-                                <span class="tech-pill">CSS</span>
                                 <span class="tech-pill">JavaScript</span>
                                 <span class="tech-pill">Firebase</span>
-                                <span class="tech-pill">manifest.json</span>
-                                <span class="tech-pill">Tailwind</span>
+                                <span class="tech-pill">TensorFlow.js</span>
+                                <span class="tech-pill">PWA</span>
+                                <span class="tech-pill">Google Maps API</span>
                             </div>
+
+                            <span class="section-label">Challenges Solved:</span>
+                            <ul class="learning-list">
+                                <li class="learning-item">Real-time data synchronization with Firebase</li>
+                                <li class="learning-item">Optimizing PWA for low-network conditions</li>
+                                <li class="learning-item">Geo-location based matching logic</li>
+                            </ul>
+
                             <div class="project-stat">
-                                <i class="ri-user-follow-line"></i> 500+ active users
+                                <i class="ri-heart-pulse-line"></i> 50K+ meals served
                             </div>
                         </div>
                     </div>
 
                     <div class="project-card">
                         <div class="project-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1000&auto=format&fit=crop"
-                                alt="Dashboard" class="project-img">
-                            <span class="project-type-badge">Web Apps</span>
-                            <div class="project-links">
-                                <a href="#" class="project-link-btn" title="View Code">
-                                    <i class="ri-github-fill"></i>
-                                </a>
-                                <a href="#" class="project-link-btn" title="Live Demo">
-                                    <i class="ri-external-link-line"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="project-content">
-                            <h3 class="project-title">Task Management Dashboard</h3>
-                            <p class="project-desc">Collaborative project management tool with drag-and-drop kanban
-                                boards, real-time updates, and team analytics.</p>
-                            <div class="project-tech-stack">
-                                <span class="tech-pill">React</span>
-                                <span class="tech-pill">TypeScript</span>
-                                <span class="tech-pill">Firebase</span>
-                                <span class="tech-pill">Tailwind</span>
-                            </div>
-                            <div class="project-stat">
-                                <i class="ri-user-follow-line"></i> 500+ active users
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="project-card">
-                        <div class="project-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1000&auto=format&fit=crop"
-                                alt="UI Library" class="project-img">
+                            <img src="images/Project3.png" alt="OpenFare Comparison" class="project-img">
                             <span class="project-type-badge">UI Components</span>
                             <div class="project-links">
-                                <a href="#" class="project-link-btn" title="View Code">
+                                <a href="https://github.com/papia-tech/OpenFare" class="project-link-btn"
+                                    title="View Code" target="_blank">
                                     <i class="ri-github-fill"></i>
                                 </a>
-                                <a href="#" class="project-link-btn" title="Live Demo">
+                                <a href="https://papia-tech.github.io/OpenFare/" class="project-link-btn"
+                                    title="Live Demo" target="_blank">
                                     <i class="ri-external-link-line"></i>
                                 </a>
                             </div>
                         </div>
                         <div class="project-content">
-                            <h3 class="project-title">Component Library</h3>
-                            <p class="project-desc">Comprehensive React component library with 50+ customizable
-                                components, built with accessibility and performance in mind.</p>
+                            <h3 class="project-title">OpenFare | Smart Ride Comparison</h3>
+                            <p class="project-desc">
+                                An AI-powered fare aggregator that compares real-time prices across Uber, Ola, and
+                                inDrive. Features dark mode, best-value highlighting, and SDG impact tracking.
+                            </p>
                             <div class="project-tech-stack">
-                                <span class="tech-pill">React</span>
-                                <span class="tech-pill">TypeScript</span>
-                                <span class="tech-pill">Storybook</span>
-                                <span class="tech-pill">CSS Modules</span>
+                                <span class="tech-pill">JavaScript</span>
+                                <span class="tech-pill">CSS Variables</span>
+                                <span class="tech-pill">FontAwesome</span>
+                                <span class="tech-pill">Algorithm</span>
                             </div>
+
+                            <span class="section-label">Key Learnings:</span>
+                            <ul class="learning-list">
+                                <li class="learning-item">Aggregating data from multiple API sources</li>
+                                <li class="learning-item">Algorithm optimization for price comparison</li>
+                                <li class="learning-item">Asynchronous JavaScript handling</li>
+                            </ul>
+
                             <div class="project-stat">
-                                <i class="ri-download-cloud-2-line"></i> 1K+ npm downloads
+                                <i class="ri-download-cloud-2-line"></i> 237M+ Downloads
                             </div>
                         </div>
                     </div>
 
+                    <div class="project-card">
+                        <div class="project-img-wrapper">
+                            <img src="images/Project4.png" alt="KolKatha AI Guide" class="project-img">
+                            <span class="project-type-badge">Full Stack</span>
+                            <div class="project-links">
+                                <a href="https://github.com/Papia-tech/Kolkata_Explorer" class="project-link-btn"
+                                    title="View Code" target="_blank">
+                                    <i class="ri-github-fill"></i>
+                                </a>
+                                <a href="https://kolkata-explorer.onrender.com" class="project-link-btn"
+                                    title="Live Demo" target="_blank">
+                                    <i class="ri-external-link-line"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">KolKatha | AI Heritage Guide</h3>
+                            <p class="project-desc">
+                                An interactive travel companion for Kolkata. Features an AI-powered chat guide, heritage
+                                search, and dynamic recommendations for monuments and food.
+                            </p>
+                            <div class="project-tech-stack">
+                                <span class="tech-pill">JavaScript</span>
+                                <span class="tech-pill">Gemini API</span>
+                                <span class="tech-pill">CSS3</span>
+                                <span class="tech-pill">FontAwesome</span>
+                            </div>
+
+                            <span class="section-label">Challenges Solved:</span>
+                            <ul class="learning-list">
+                                <li class="learning-item">Context-aware Prompt Engineering</li>
+                                <li class="learning-item">Managing API latency for smooth UX</li>
+                                <li class="learning-item">Dynamic content rendering from AI response</li>
+                            </ul>
+
+                            <div class="project-stat">
+                                <i class="ri-compass-3-line"></i> 100K+ explorers
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -2644,23 +3304,26 @@
 
             <div class="contact-container">
                 <div class="contact-form-card">
-                    <form action="#">
+                    <form action="https://formsubmit.co/dc60a59d680d64d5caa615a9416a9e53" method="POST">
                         <div class="form-group">
                             <label class="form-label">Name</label>
-                            <input type="text" class="form-input" placeholder="Your name">
+                            <input type="text" name="name" required class="form-input" placeholder="Your name">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-input" placeholder="your.email@example.com">
+                            <input type="email" class="form-input" name="email" required
+                                placeholder="your.email@example.com">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Message</label>
-                            <textarea class="form-input form-textarea"
+                            <textarea class="form-input form-textarea" name="msg" required
                                 placeholder="Tell me about your project..."></textarea>
                         </div>
                         <button type="submit" class="send-btn">
                             Send Message <i class="ri-send-plane-fill"></i>
                         </button>
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_next" value="https://Papia-tech.github.io/Portfolio/thankyou.html">
                     </form>
                 </div>
 
@@ -2699,8 +3362,9 @@
                             class="social-btn" title="LinkedIn">
                             <i class="ri-linkedin-fill"></i>
                         </a>
-                        <a href="#" target="_blank" class="social-btn" title="Twitter">
-                            <i class="ri-twitter-x-fill"></i>
+                        <a href="https://www.instagram.com/papiakarmakar2006/" target="_blank" class="social-btn"
+                            title="Instagram">
+                            <i class="ri-instagram-line"></i>
                         </a>
                     </div>
 
@@ -2724,100 +3388,75 @@
                 </div>
             </div>
         </footer>
+
+        <div class="right-sidebar">
+            <a href="https://github.com/Papia-tech" target="_blank" class="social-text">Github</a>
+            <a href="https://www.linkedin.com/in/papia-karmakar-111408338/" target="_blank"
+                class="social-text">Linkedin</a>
+            <a href="https://www.instagram.com/papiakarmakar2006/" target="_blank" class="social-text">Instagram</a>
+        </div>
         <a href="#contact" class="floating-btn" id="floatingBtn" title="Contact Me">
             <i class="ri-customer-service-2-line"></i>
         </a>
     </main>
 
     <script>
-        // Theme Toggle Logic
-const themeToggle = document.getElementById('theme-toggle');
-const icon = themeToggle.querySelector('i');
-let isDark = true;
+        const API_BASE_URL = window.location.origin;
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.classList.add('loader-hidden');
+            }, 1000);
+        });
 
-themeToggle.addEventListener('click', () => {
-    isDark = !isDark;
-    
-    if (isDark) {
-        // --- DARK MODE (Original Neon) ---
-        document.documentElement.style.setProperty('--dark-bg', '#1e1e1e');
-        document.documentElement.style.setProperty('--sidebar-bg', '#333333');
-        document.documentElement.style.setProperty('--card-bg', '#252526');
-        document.documentElement.style.setProperty('--input-bg', '#3c3c3c');
-        document.documentElement.style.setProperty('--card-border', '#3e3e3e');
-        
-        // Text Colors
-        document.documentElement.style.setProperty('--text-white', '#d4d4d4');
-        document.documentElement.style.setProperty('--text-gray', '#858585');
-        
-        // Neon Accents (Good for dark)
-        document.documentElement.style.setProperty('--primary-green', '#4ec9b0'); 
-        document.documentElement.style.setProperty('--accent-blue', '#569cd6');   
-        document.documentElement.style.setProperty('--string-orange', '#ce9178'); 
-        document.documentElement.style.setProperty('--comment-gray', '#7ca668');  
-        
-        // Shadows off in dark mode
-        document.documentElement.style.setProperty('--card-shadow', 'none');
+        const themeToggle = document.getElementById('theme-toggle');
+        const icon = themeToggle.querySelector('i');
+        let isDark = true;
 
-        icon.className = 'ri-sun-line';
+        themeToggle.addEventListener('click', () => {
+            isDark = !isDark;
 
-    } else {
-        // --- LIGHT MODE (Professional Student Theme) ---
-        
-        // Backgrounds: Soft "Paper" White (Not harsh)
-        document.documentElement.style.setProperty('--dark-bg', '#f1f5f9'); 
-        document.documentElement.style.setProperty('--sidebar-bg', '#ffffff');
-        document.documentElement.style.setProperty('--card-bg', '#ffffff');
-        document.documentElement.style.setProperty('--input-bg', '#f8fafc');
-        document.documentElement.style.setProperty('--card-border', '#e2e8f0');
+            if (isDark) {
+                document.documentElement.style.setProperty('--dark-bg', '#1e1e1e');
+                document.documentElement.style.setProperty('--sidebar-bg', '#333333');
+                document.documentElement.style.setProperty('--card-bg', '#252526');
+                document.documentElement.style.setProperty('--input-bg', '#3c3c3c');
+                document.documentElement.style.setProperty('--card-border', '#3e3e3e');
+                document.documentElement.style.setProperty('--text-white', '#d4d4d4');
+                document.documentElement.style.setProperty('--text-gray', '#858585');
+                document.documentElement.style.setProperty('--primary-green', '#4ec9b0');
+                document.documentElement.style.setProperty('--accent-blue', '#569cd6');
+                document.documentElement.style.setProperty('--string-orange', '#ce9178');
+                document.documentElement.style.setProperty('--comment-gray', '#7ca668');
+                document.documentElement.style.setProperty('--card-shadow', 'none');
+                icon.className = 'ri-sun-line';
+            } else {
+                document.documentElement.style.setProperty('--dark-bg', '#f1f5f9');
+                document.documentElement.style.setProperty('--sidebar-bg', '#ffffff');
+                document.documentElement.style.setProperty('--card-bg', '#ffffff');
+                document.documentElement.style.setProperty('--input-bg', '#f8fafc');
+                document.documentElement.style.setProperty('--card-border', '#e2e8f0');
+                document.documentElement.style.setProperty('--text-white', '#334155');
+                document.documentElement.style.setProperty('--text-gray', '#64748b');
+                document.documentElement.style.setProperty('--primary-green', '#0f766e');
+                document.documentElement.style.setProperty('--accent-blue', '#2563eb');
+                document.documentElement.style.setProperty('--string-orange', '#c2410c');
+                document.documentElement.style.setProperty('--comment-gray', '#65a30d');
+                document.documentElement.style.setProperty('--card-shadow', '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)');
+                icon.className = 'ri-moon-line';
+            }
+        });
 
-        // Text Colors: Dark Grey (Easy to read)
-        document.documentElement.style.setProperty('--text-white', '#334155'); // Dark Grey text
-        document.documentElement.style.setProperty('--text-gray', '#64748b');  // Muted Grey
-        
-        // --- NEW ACCENT COLORS (No Red) ---
-        
-        // 1. Classes: Deep Teal (Professional & Calming)
-        document.documentElement.style.setProperty('--primary-green', '#0f766e'); 
-        
-        // 2. Keywords: Royal Blue (Standard Academic Color)
-        document.documentElement.style.setProperty('--accent-blue', '#2563eb');   
-
-        // 3. Strings: Bronze/Deep Orange (Replaces the "Red")
-        // This is warm and readable, but not aggressive like red.
-        document.documentElement.style.setProperty('--string-orange', '#c2410c'); 
-
-        // 4. Comments: Slate Grey (Subtle)
-        document.documentElement.style.setProperty('--comment-gray', '#65a30d');  
-
-        // Add soft shadow so white cards don't blend into the background
-        document.documentElement.style.setProperty('--card-shadow', '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)');
-
-        icon.className = 'ri-moon-line';
-    }
-});
-
-        // ----------------------------------------------------
-        // UPDATED: Smooth Scroll with Custom Timing Logic
-        // ----------------------------------------------------
-
-        // 1. Select all links that start with '#' (internal links)
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 const targetId = this.getAttribute('href');
-
-                // Ignore empty links or just '#'
                 if (targetId === '#' || !targetId) return;
 
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
-                    e.preventDefault(); // Stop instant CSS scroll
-
-                    // Call our custom scroll function
-                    // CHANGE '1000' HERE TO ADJUST SPEED (in milliseconds)
+                    e.preventDefault();
                     smoothScroll(targetElement, 1000);
 
-                    // Update Active State manually
                     if (this.classList.contains('nav-item')) {
                         navItems.forEach(nav => nav.classList.remove('active'));
                         this.classList.add('active');
@@ -2826,7 +3465,6 @@ themeToggle.addEventListener('click', () => {
             });
         });
 
-        // Custom Animation Function
         function smoothScroll(target, duration) {
             const targetPosition = target.getBoundingClientRect().top + window.pageYOffset;
             const startPosition = window.pageYOffset;
@@ -2836,12 +3474,8 @@ themeToggle.addEventListener('click', () => {
             function animation(currentTime) {
                 if (startTime === null) startTime = currentTime;
                 const timeElapsed = currentTime - startTime;
-
-                // Ease function (easeInOutQuad) - makes it start slow, speed up, then slow down
                 const run = ease(timeElapsed, startPosition, distance, duration);
-
                 window.scrollTo(0, run);
-
                 if (timeElapsed < duration) requestAnimationFrame(animation);
             }
 
@@ -2851,11 +3485,9 @@ themeToggle.addEventListener('click', () => {
                 t--;
                 return -c / 2 * (t * (t - 2) - 1) + b;
             }
-
             requestAnimationFrame(animation);
         }
 
-        // Active State Logic on Scroll (Keep existing logic)
         const navItems = document.querySelectorAll('.nav-item');
         window.addEventListener('scroll', () => {
             let current = '';
@@ -2877,7 +3509,6 @@ themeToggle.addEventListener('click', () => {
             });
         });
 
-        // Infinite Scroll Logic
         const scrollers = document.querySelectorAll(".scroller");
         if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
             addAnimation();
@@ -2896,22 +3527,14 @@ themeToggle.addEventListener('click', () => {
             });
         }
 
-        // ----------------------------------------------------
-        // FLOATING BUTTON VISIBILITY LOGIC
-        // ----------------------------------------------------
         document.addEventListener('scroll', () => {
             const contactSection = document.getElementById('contact');
             const floatingBtn = document.getElementById('floatingBtn');
-
             if (!contactSection || !floatingBtn) return;
 
-            // Get the position of the contact section relative to the viewport
             const rect = contactSection.getBoundingClientRect();
             const windowHeight = window.innerHeight;
 
-            // Logic: 
-            // If the top of the contact section is less than the window height
-            // (meaning the contact section has entered the screen), hide the button.
             if (rect.top <= windowHeight - 100) {
                 floatingBtn.classList.add('hide-btn');
             } else {
@@ -2919,111 +3542,21 @@ themeToggle.addEventListener('click', () => {
             }
         });
 
-        // Auto-update Footer Year
         document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
-    <script>
+
         document.addEventListener('DOMContentLoaded', () => {
-            const certCards = document.querySelectorAll('.cert-card');
-            const certGrid = document.querySelector('.cert-grid');
-            const SHOW_LIMIT = 4;
-
-            // 1. If there are 4 or fewer certificates, do nothing
-            if (certCards.length <= SHOW_LIMIT) return;
-
-            // 2. Hide certificates beyond the limit initially
-            certCards.forEach((card, index) => {
-                if (index >= SHOW_LIMIT) {
-                    card.style.display = 'none';
-                }
-            });
-
-            // 3. Create the "Show More" Button dynamically
-            const btnContainer = document.createElement('div');
-            Object.assign(btnContainer.style, {
-                textAlign: 'center',
-                marginTop: '3rem',
-                width: '100%',
-                gridColumn: '1 / -1' // Ensure it spans full width if inside grid
-            });
-
-            const moreBtn = document.createElement('button');
-            moreBtn.innerHTML = 'Show More';
-
-            // Apply styles to match your theme (using your CSS variables)
-            Object.assign(moreBtn.style, {
-                padding: '12px 28px',
-                background: 'transparent',
-                color: 'var(--accent-blue)',
-                border: '1px solid var(--accent-blue)',
-                cursor: 'pointer',
-                fontSize: '0.9rem',
-                fontWeight: '500',
-                fontFamily: 'inherit',
-                transition: 'all 0.3s ease',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px'
-            });
-
-            // Add Hover Effect via JS
-            moreBtn.addEventListener('mouseenter', () => {
-                moreBtn.style.borderColor = 'var(--accent-blue)';
-                moreBtn.style.background = 'rgba(86, 156, 214, 0.1)';
-            });
-            moreBtn.addEventListener('mouseleave', () => {
-                moreBtn.style.borderColor = 'var(--accent-blue)';
-                moreBtn.style.background = 'transparent';
-            });
-
-            // 4. Click Functionality
-            moreBtn.addEventListener('click', () => {
-                // Reveal all hidden cards
-                certCards.forEach(card => {
-                    if (card.style.display === 'none') {
-                        card.style.display = 'flex'; // Restore original display type
-
-                        // Add a small fade-in animation
-                        card.style.opacity = '0';
-                        card.style.transform = 'translateY(20px)';
-                        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-
-                        // Trigger reflow
-                        requestAnimationFrame(() => {
-                            card.style.opacity = '1';
-                            card.style.transform = 'translateY(0)';
-                        });
-                    }
-                });
-
-                // Hide the button after clicking
-                moreBtn.style.display = 'none';
-            });
-
-            // 5. Append the button to the UI
-            btnContainer.appendChild(moreBtn);
-            // Insert after the grid
-            certGrid.parentNode.insertBefore(btnContainer, certGrid.nextSibling);
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. SELECT ELEMENTS
             const mainGrid = document.querySelector('.projects-grid');
             const cards = Array.from(document.querySelectorAll('.project-card'));
             const leftArrow = document.querySelector('.arrow-left');
             const rightArrow = document.querySelector('.arrow-right');
             const filterBtns = document.querySelectorAll('.filter-btn');
 
-            // 2. CREATE THE "SCROLL WRAPPER" DYNAMICALLY
             const scrollWrapper = document.createElement('div');
             scrollWrapper.className = 'js-scroll-wrapper';
 
-            // 3. MOVE CARDS INTO WRAPPER
             cards.forEach(card => scrollWrapper.appendChild(card));
             mainGrid.appendChild(scrollWrapper);
 
-            // 4. APPLY STYLES PROGRAMMATICALLY
             Object.assign(mainGrid.style, {
                 display: 'block',
                 position: 'relative',
@@ -3039,27 +3572,22 @@ themeToggle.addEventListener('click', () => {
                 scrollBehavior: 'smooth',
                 paddingBottom: '10px',
                 scrollbarWidth: 'none',
-                gridAutoColumns: 'calc((100% - 4rem) / 3)'
+                gridAutoColumns: 'calc((100% - 2rem) / 2)'
             });
 
-            // Hide Scrollbar via Style Tag
             const styleTag = document.createElement('style');
             styleTag.innerHTML = `
-            .js-scroll-wrapper::-webkit-scrollbar { display: none; }
-            @media (max-width: 768px) {
-                .js-scroll-wrapper { grid-auto-columns: 85% !important; }
-            }
-        `;
+                .js-scroll-wrapper::-webkit-scrollbar { display: none; }
+                @media (max-width: 768px) {
+                    .js-scroll-wrapper { grid-auto-columns: 85% !important; }
+                }
+            `;
             document.head.appendChild(styleTag);
 
-            // ============================================
-            // 5. HELPER: CHECK VISIBILITY & SCROLL LIMITS
-            // ============================================
             function updateArrowVisibility() {
                 if (!leftArrow || !rightArrow) return;
                 const visibleCount = cards.filter(card => card.style.display !== 'none').length;
 
-                // Show arrows ONLY if > 4 items
                 if (visibleCount > 3) {
                     leftArrow.style.display = 'flex';
                     rightArrow.style.display = 'flex';
@@ -3069,23 +3597,16 @@ themeToggle.addEventListener('click', () => {
                 }
             }
 
-            // ============================================
-            // 6. LOOPING SCROLL LOGIC (The Fix)
-            // ============================================
             if (leftArrow && rightArrow) {
-
-                const getScrollAmount = () => scrollWrapper.clientWidth / 3 + 16;
+                const getScrollAmount = () => scrollWrapper.clientWidth / 2 + 16;
 
                 rightArrow.addEventListener('click', () => {
                     const maxScroll = scrollWrapper.scrollWidth - scrollWrapper.clientWidth;
                     const currentScroll = scrollWrapper.scrollLeft;
 
-                    // Tolerance of 5px for calculation errors
                     if (currentScroll >= maxScroll - 5) {
-                        // AT END -> LOOP TO START
                         scrollWrapper.scrollTo({ left: 0, behavior: 'smooth' });
                     } else {
-                        // NORMAL SCROLL RIGHT
                         scrollWrapper.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
                     }
                 });
@@ -3095,16 +3616,13 @@ themeToggle.addEventListener('click', () => {
                     const maxScroll = scrollWrapper.scrollWidth - scrollWrapper.clientWidth;
 
                     if (currentScroll <= 5) {
-                        // AT START -> LOOP TO END
                         scrollWrapper.scrollTo({ left: maxScroll, behavior: 'smooth' });
                     } else {
-                        // NORMAL SCROLL LEFT
                         scrollWrapper.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
                     }
                 });
             }
 
-            // 7. FILTER LOGIC
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
                     filterBtns.forEach(b => b.classList.remove('active'));
@@ -3128,10 +3646,176 @@ themeToggle.addEventListener('click', () => {
                 });
             });
 
-            // Initial check
             updateArrowVisibility();
         });
+
+        document.querySelectorAll('.resume-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const downloadLoader = document.getElementById('download-loader');
+                if (downloadLoader) {
+                    downloadLoader.classList.remove('loader-hidden');
+                    setTimeout(() => {
+                        downloadLoader.classList.add('loader-hidden');
+                    }, 2500);
+                }
+            });
+        });
+
+        function initShowMore() {
+            const certLinks = document.querySelectorAll('.cert-card-link');
+            const certGrid = document.querySelector('.cert-grid');
+            const SHOW_LIMIT = 6;
+
+            if (certLinks.length <= SHOW_LIMIT) return;
+
+            certLinks.forEach((link, index) => {
+                if (index >= SHOW_LIMIT) {
+                    link.style.display = 'none';
+                }
+            });
+
+            const btnContainer = document.createElement('div');
+            Object.assign(btnContainer.style, {
+                textAlign: 'center',
+                marginTop: '3rem',
+                width: '100%',
+                gridColumn: '1 / -1'
+            });
+
+            const moreBtn = document.createElement('button');
+            moreBtn.innerHTML = 'Show More Certificates';
+
+            Object.assign(moreBtn.style, {
+                padding: '12px 28px',
+                background: 'var(--accent-blue)',
+                color: '#000',
+                border: '1px solid var(--accent-blue)',
+                cursor: 'pointer',
+                fontSize: '0.9rem',
+                fontWeight: '500',
+                fontFamily: 'inherit',
+                transition: 'all 0.3s ease',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px'
+            });
+
+            moreBtn.addEventListener('mouseenter', () => {
+                moreBtn.style.borderColor = 'var(--accent-blue)';
+                moreBtn.style.color = 'var(--accent-blue)';
+                moreBtn.style.background = 'rgba(86, 156, 214, 0.1)';
+            });
+            moreBtn.addEventListener('mouseleave', () => {
+                moreBtn.style.borderColor = 'var(--accent-blue)';
+                moreBtn.style.color = '#000';
+                moreBtn.style.background = 'var(--accent-blue)';
+            });
+
+            moreBtn.addEventListener('click', () => {
+                certLinks.forEach(link => {
+                    if (link.style.display === 'none') {
+                        link.style.display = 'block';
+                        link.style.opacity = '0';
+                        link.style.transform = 'translateY(20px)';
+                        link.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+
+                        requestAnimationFrame(() => {
+                            link.style.opacity = '1';
+                            link.style.transform = 'translateY(0)';
+                        });
+                    }
+                });
+                moreBtn.style.display = 'none';
+            });
+
+            btnContainer.appendChild(moreBtn);
+            certGrid.parentNode.insertBefore(btnContainer, certGrid.nextSibling);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const skillCards = document.querySelectorAll('.skill-category-card');
+            const skillBars = document.querySelectorAll('.skill-bar-fill');
+
+            const cardObserverOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const cardObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('reveal');
+                    } else {
+                        entry.target.classList.remove('reveal');
+                    }
+                });
+            }, cardObserverOptions);
+
+            skillCards.forEach((card, index) => {
+                const delay = (index % 3) * 0.15;
+                card.style.transitionDelay = `${delay}s`;
+                cardObserver.observe(card);
+            });
+
+            const barObserverOptions = { threshold: 0.2 };
+
+            const skillObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const progressBar = entry.target;
+                        setTimeout(() => {
+                            progressBar.style.width = progressBar.getAttribute('data-percentage');
+                        }, 300);
+                    } else {
+                        entry.target.style.width = '0%';
+                    }
+                });
+            }, barObserverOptions);
+
+            skillBars.forEach(bar => skillObserver.observe(bar));
+        });
+
+        const certCardsData = document.querySelectorAll('.cert-card-link');
+        const certObserverOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -70px 0px'
+        };
+
+        const certObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('reveal');
+                } else {
+                    entry.target.classList.remove('reveal');
+                }
+            });
+        }, certObserverOptions);
+
+        certCardsData.forEach(card => certObserver.observe(card));
+
+        certCardsData.forEach((card, index) => {
+            const delay = (index % 3) * 0.2;
+            card.style.transitionDelay = `${delay}s`;
+        });
+
+        // --- NEW EDUCATION INTERACTIVE TAB INTERACTION CODE ---
+        document.querySelectorAll('.ide-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active classes from all header tabs
+                document.querySelectorAll('.ide-tab').forEach(t => t.classList.remove('active'));
+                // Hide all terminal window content files
+                document.querySelectorAll('.edu-file-content').forEach(c => c.classList.remove('active'));
+
+                // Set selected file active
+                tab.classList.add('active');
+                const targetPanel = document.getElementById(tab.getAttribute('data-target'));
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                }
+            });
+        });
     </script>
+    <script src="js/security.js"></script>
 </body>
 
 </html>
