@@ -38,7 +38,7 @@
     <meta name="google-site-verification" content="HnynDyts5ZY4COPR8q7T6pO9qvQhpOj3mCw2G14eIKg" />
 
     <!-- Favicon & Icons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="image/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
 
@@ -875,6 +875,10 @@
             border-radius: 6px;
             overflow: hidden;
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s;
+            animation: fadeInUp linear both;
+            animation-timeline: view();
+            animation-range: entry 0% cover 30%;
         }
 
         /* Editor Header Tabs */
@@ -1285,6 +1289,111 @@
         .install-btn:active {
             opacity: 1;
             transform: translateY(0px);
+        }
+
+        /* ========================
+           SECTION 3.8: ACHIEVEMENTS & OPEN SOURCE
+           ======================== */
+        .achievements-section,
+        .open-source-section {
+            padding: 5rem 4rem;
+            min-height: 80vh;
+        }
+
+        .achievements-grid,
+        .open-source-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .achievement-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .achievement-card,
+        .open-source-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-left: 4px solid var(--accent-blue);
+            padding: 1.8rem;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            transition: transform 0.3s;
+            animation: fadeInUp linear both;
+            animation-timeline: view();
+            animation-range: entry 0% cover 40%;
+        }
+
+        .achievement-card-link:hover .achievement-card,
+        .open-source-card:hover {
+            transform: translateY(-5px);
+            background: rgba(86, 156, 214, 0.07);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .achieve-header,
+        .os-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .achieve-title,
+        .os-title {
+            font-size: 1.2rem;
+            color: var(--primary-green);
+            font-weight: 600;
+        }
+
+        .achieve-role,
+        .os-role {
+            font-size: 0.85rem;
+            color: var(--string-orange);
+            margin-top: 4px;
+        }
+
+        .achieve-date,
+        .os-date {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
+            border: 1px solid var(--card-border);
+        }
+
+        .achieve-body,
+        .os-body {
+            color: var(--comment-gray);
+            font-style: italic;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1.2rem;
+        }
+
+        .achieve-link-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--accent-blue);
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+
+        .repo-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 0.8rem;
         }
 
         /* ========================
@@ -1932,7 +2041,9 @@
             .about-section,
             .skills-section,
             .projects-section,
-            .contact-section {
+            .contact-section,
+            .achievements-section,
+            .open-source-section {
                 padding: 4rem 3rem;
             }
 
@@ -1950,7 +2061,9 @@
             }
 
             .skills-grid,
-            .projects-grid {
+            .projects-grid,
+            .achievements-grid,
+            .open-source-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
 
@@ -2117,7 +2230,9 @@
             .projects-section,
             .contact-section,
             .education-section,
-            .cert-section {
+            .cert-section,
+            .achievements-section,
+            .open-source-section {
                 padding: 3rem 1.5rem;
             }
 
@@ -2239,7 +2354,9 @@
 
             .bento-grid,
             .skills-grid,
-            .projects-grid {
+            .projects-grid,
+            .achievements-grid,
+            .open-source-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -2307,6 +2424,12 @@
             </a>
             <a href="#certifications" class="nav-item" data-tooltip="Certifications">
                 <i class="ri-award-line"></i>
+            </a>
+            <a href="#achievements" class="nav-item" data-tooltip="Achievements">
+                <i class="ri-trophy-line"></i>
+            </a>
+            <a href="#open-source" class="nav-item" data-tooltip="Open Source">
+                <i class="ri-git-pull-request-line"></i>
             </a>
             <a href="#projects" class="nav-item" data-tooltip="Projects">
                 <i class="ri-stack-line"></i>
@@ -2887,7 +3010,7 @@
         <section id="certifications" class="cert-section">
             <div class="projects-header">
                 <div class="badge" style="margin-bottom: 1rem;">
-                    <i class="ri-award-line"></i> Achievements
+                    <i class="ri-award-line"></i> Credentials
                 </div>
                 <h2>Certifications & Badges</h2>
                 <p class="description" style="margin: 0 auto; max-width: 600px;">
@@ -3337,6 +3460,130 @@
             </div>
         </section>
 
+        <!-- ========================
+           SECTION: OPEN SOURCE
+           ======================== -->
+        <section id="open-source" class="open-source-section">
+            <div class="projects-header">
+                <div class="badge" style="margin-bottom: 1rem;">
+                    <i class="ri-git-pull-request-line"></i> Contributions
+                </div>
+                <h2>Open Source Experience</h2>
+                <p class="description" style="margin: 0 auto; max-width: 600px;">
+                    Collaborative contributions to community codebases and Git-driven review workflows.
+                </p>
+            </div>
+
+            <div class="skills-container">
+                <div class="open-source-grid">
+
+                    <div class="open-source-card">
+                        <div class="os-header">
+                            <div>
+                                <div class="os-title">GirlScript Summer of Code (GSSoC)</div>
+                                <div class="os-role">Open Source Contributor</div>
+                            </div>
+                            <span class="os-date">2026</span>
+                        </div>
+                        <p class="os-body">
+                            Engineered and merged pull requests fixing responsive UI/UX and feature functionality across active GSSoC repositories. Navigated structured pull request reviews and version control practices in team environments.
+                        </p>
+                        <div>
+                            <span class="section-label" style="font-size:0.8rem; margin-top:0.5rem;">Target Repositories:</span>
+                            <div class="repo-tags">
+                                <span class="tech-pill">AlgoBuddy</span>
+                                <span class="tech-pill">GitNest</span>
+                                <span class="tech-pill">story-spark-ai</span>
+                                <span class="tech-pill">The-Leetcode-City</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="open-source-card">
+                        <div class="os-header">
+                            <div>
+                                <div class="os-title">Elite Coders Summer of Code (ECSoC)</div>
+                                <div class="os-role">Open Source Contributor</div>
+                            </div>
+                            <span class="os-date">2026</span>
+                        </div>
+                        <p class="os-body">
+                            Refactored UI consistency and elevated front-end performance in community-driven codebases. Collaborated directly with maintainers to iteratively incorporate code review feedback for merged PRs.
+                        </p>
+                        <div>
+                            <span class="section-label" style="font-size:0.8rem; margin-top:0.5rem;">Target Repositories:</span>
+                            <div class="repo-tags">
+                                <span class="tech-pill">SecureFlow</span>
+                                <span class="tech-pill">CryptoViz</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================
+           SECTION: ACHIEVEMENTS
+           ======================== -->
+        <section id="achievements" class="achievements-section">
+            <div class="projects-header">
+                <div class="badge" style="margin-bottom: 1rem;">
+                    <i class="ri-trophy-line"></i> Milestones
+                </div>
+                <h2>Achievements</h2>
+                <p class="description" style="margin: 0 auto; max-width: 600px;">
+                    Key academic accolades and recognized honors. Click on cards to view certificate documents.
+                </p>
+            </div>
+
+            <div class="skills-container">
+                <div class="achievements-grid">
+                    
+                    <a href="#" target="_blank" class="achievement-card-link">
+                        <div class="achievement-card">
+                            <div>
+                                <div class="achieve-header">
+                                    <div>
+                                        <div class="achieve-title">NPTEL Star 2026</div>
+                                        <div class="achieve-role">Awarded at IIT Kharagpur</div>
+                                    </div>
+                                    <span class="achieve-date">2026</span>
+                                </div>
+                                <p class="achieve-body">
+                                    Earned national-level recognition across three distinct categories: Discipline Star, Motivated Learner, and Believer for exceptional performance across technical tracks.
+                                </p>
+                            </div>
+                            <div class="achieve-link-indicator">
+                                View Certificate <i class="ri-external-link-line"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="#" target="_blank" class="achievement-card-link">
+                        <div class="achievement-card">
+                            <div>
+                                <div class="achieve-header">
+                                    <div>
+                                        <div class="achieve-title">Academic Excellence</div>
+                                        <div class="achieve-role">B.Tech CSE @ UEM, Kolkata</div>
+                                    </div>
+                                    <span class="achieve-date">2024</span>
+                                </div>
+                                <p class="achieve-body">
+                                    Maintained a stellar cumulative grade point average of 9.01/10.0 in Computer Science & Engineering while actively participating in collegiate research and tech projects.
+                                </p>
+                            </div>
+                            <div class="achieve-link-indicator">
+                                View Document <i class="ri-external-link-line"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+        </section>
+
         <section id="contact" class="contact-section">
             <div class="contact-header">
                 <div class="badge" style="margin-bottom: 1rem;">
@@ -3408,7 +3655,7 @@
                             class="social-btn" title="LinkedIn">
                             <i class="ri-linkedin-fill"></i>
                         </a>
-                        <a href="https://www.instagram.com/papiakarmakar2006/" target="_blank" class="social-btn"
+                        <a href="https://www.instagram.com/papia_tech/" target="_blank" class="social-btn"
                             title="Instagram">
                             <i class="ri-instagram-line"></i>
                         </a>
@@ -3439,7 +3686,7 @@
             <a href="https://github.com/Papia-tech" target="_blank" class="social-text">Github</a>
             <a href="https://www.linkedin.com/in/papia-karmakar-111408338/" target="_blank"
                 class="social-text">Linkedin</a>
-            <a href="https://www.instagram.com/papiakarmakar2006/" target="_blank" class="social-text">Instagram</a>
+            <a href="https://www.instagram.com/papia_tech/" target="_blank" class="social-text">Instagram</a>
         </div>
         <a href="#contact" class="floating-btn" id="floatingBtn" title="Contact Me">
             <i class="ri-customer-service-2-line"></i>
