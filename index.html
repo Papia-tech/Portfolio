@@ -3823,9 +3823,7 @@
         const API_BASE_URL = window.location.origin;
         window.addEventListener('load', () => {
             const preloader = document.getElementById('preloader');
-            setTimeout(() => {
-                preloader.classList.add('loader-hidden');
-            }, 1000);
+            preloader.classList.add('loader-hidden');
         });
 
         const themeToggle = document.getElementById('theme-toggle');
